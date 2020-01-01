@@ -16,3 +16,4 @@ module "rs_firewall" {
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | network\_name | The name of the network. | string | null | yes |
+| rule_prefix | A prefix to add to rule names. All rule names must be unique in the project | string | null | no |

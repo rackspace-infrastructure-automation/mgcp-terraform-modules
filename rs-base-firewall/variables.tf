@@ -23,3 +23,7 @@ variable "network_name" {
   type = string
 }
 
+variable "rule_prefix" {
+  type = string
+  default = ""
+}

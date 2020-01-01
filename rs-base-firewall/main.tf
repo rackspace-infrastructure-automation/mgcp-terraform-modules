@@ -1,5 +1,5 @@
 resource "google_compute_firewall" "rs-bastion-direct" {
-  name    = "rs-bastion-direct"
+  name    = "${var.rule_prefix}rs-bastion-direct"
   network = var.network_name
 
   allow {
@@ -16,7 +16,7 @@ resource "google_compute_firewall" "rs-bastion-direct" {
 
 
 resource "google_compute_firewall" "rs-bastion-ext" {
-  name    = "rs-bastion-ext"
+  name    = "${var.rule_prefix}rs-bastion-ext"
   network = var.network_name
 
   allow {
@@ -35,7 +35,7 @@ resource "google_compute_firewall" "rs-bastion-ext" {
 
 
 resource "google_compute_firewall" "rs-bastion-int" {
-  name    = "rs-bastion-int"
+  name    = "${var.rule_prefix}rs-bastion-int"
   network = var.network_name
 
   allow {
@@ -51,7 +51,7 @@ resource "google_compute_firewall" "rs-bastion-int" {
 }
 
 resource "google_compute_firewall" "rs-bastion-iap" {
-  name    = "rs-bastion-iap"
+  name    = "${var.rule_prefix}rs-bastion-iap"
   network = var.network_name
 
   allow {
