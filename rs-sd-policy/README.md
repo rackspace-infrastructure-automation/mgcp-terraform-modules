@@ -40,15 +40,26 @@ nat_alert {
 }
 ```
 
+## Providers
+
+| Name | Version |
+|------|---------|
+| google | n/a |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| watchman\_token | Watchman Token | string | `""` | yes |
-| project_id | Project ID | string | `""` | yes |
-| enabled | Are the notification channels enabled? | bool | false | no |
-| rhel_disk_usage | RHEL Disk Parameters | object | `<map>` | no |
-| debian_disk_usage | Debian Disk Parameters | object | `<map>` | no |
-| windows_disk_usage | Windows Disk Parameters | object | `<map>` | no |
-| memory_usage | Memory Usage Parameters | object | `<map>` | no |
-| nat_alert | NAT GW Parameters | map | `<map>` | no |
+|------|-------------|------|---------|:-----:|
+| debian\_disk\_usage | Memory Usage Parameters | <pre>object({<br>    enabled              = bool<br>    blk_dev_name         = string<br>    disk_threshold_bytes = number<br>  })<br></pre> | <pre>{<br>  "blk_dev_name": "null",<br>  "disk_threshold_bytes": 0,<br>  "enabled": false<br>}<br></pre> | no |
+| enabled | n/a | `bool` | `false` | no |
+| memory\_usage | Memory Usage Parameters | <pre>object({<br>    enabled       = bool<br>    mem_threshold = number<br>  })<br></pre> | <pre>{<br>  "enabled": false,<br>  "mem_threshold": 100<br>}<br></pre> | no |
+| nat\_alert | Memory Usage Parameters | `map` | <pre>{<br>  "enabled": false<br>}<br></pre> | no |
+| project\_id | n/a | `string` | n/a | yes |
+| rhel\_disk\_usage | Memory Usage Parameters | <pre>object({<br>    enabled              = bool<br>    blk_dev_name         = string<br>    disk_threshold_bytes = number<br>  })<br></pre> | <pre>{<br>  "blk_dev_name": "null",<br>  "disk_threshold_bytes": 0,<br>  "enabled": false<br>}<br></pre> | no |
+| uptime\_check | Memory Usage Parameters | `map` | n/a | yes |
+| watchman\_token | n/a | `string` | n/a | yes |
+| windows\_disk\_usage | Memory Usage Parameters | <pre>object({<br>    enabled                   = bool<br>    blk_dev_name              = string<br>    disk_threshold_percentage = number<br>  })<br></pre> | <pre>{<br>  "blk_dev_name": "null",<br>  "disk_threshold_percentage": 80,<br>  "enabled": false<br>}<br></pre> | no |
+
+## Outputs
+
+No output.
