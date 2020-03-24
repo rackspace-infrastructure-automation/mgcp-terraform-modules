@@ -33,7 +33,7 @@ module "ha-vpn" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
-| advertised\_route\_priority | The priority of routes advertised to the BGP peers | `number` | `100` | no |
+| advertised\_route\_priority | The priority of routes advertised to the BGP peers | `list(number)` | `0,0` | no |
 | bgp\_asn | ASN of the Cloud Router | `number` | n/a | yes |
 | bgp\_cr\_session\_range | Source IP and range of cloud router BGP session. A valid /30 subnet like 169.254.0.5/30 | `list` | n/a | yes |
 | cloud\_router\_name | n/a | `string` | n/a | yes |
