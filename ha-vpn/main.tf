@@ -72,19 +72,21 @@ resource "google_compute_router_interface" "vpn-rtr-interface1" {
 }
 
 resource "google_compute_router_peer" "vpn-rtr-peer0" {
-  provider        = google-beta
-  name            = "${var.resource_prefix}-peer0"
-  router          = google_compute_router.vpn-rtr.name
-  peer_ip_address = var.peer_remote_session_range[0]
-  peer_asn        = var.peer_asn
-  interface       = google_compute_router_interface.vpn-rtr-interface0.name
+  provider                  = google-beta
+  name                      = "${var.resource_prefix}-peer0"
+  router                    = google_compute_router.vpn-rtr.name
+  peer_ip_address           = var.peer_remote_session_range[0]
+  peer_asn                  = var.peer_asn
+  advertised_route_priority = var.advertised_route_priority[0]
+  interface                 = google_compute_router_interface.vpn-rtr-interface0.name
 }
 
 resource "google_compute_router_peer" "vpn-rtr-peer1" {
-  provider        = google-beta
-  name            = "${var.resource_prefix}-peer1"
-  router          = google_compute_router.vpn-rtr.name
-  peer_ip_address = var.peer_remote_session_range[1]
-  peer_asn        = var.peer_asn
-  interface       = google_compute_router_interface.vpn-rtr-interface1.name
+  provider                  = google-beta
+  name                      = "${var.resource_prefix}-peer1"
+  router                    = google_compute_router.vpn-rtr.name
+  peer_ip_address           = var.peer_remote_session_range[1]
+  peer_asn                  = var.peer_asn
+  advertised_route_priority = var.advertised_route_priority[1]
+  interface                 = google_compute_router_interface.vpn-rtr-interface1.name
 }
