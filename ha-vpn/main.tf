@@ -39,6 +39,7 @@ resource "google_compute_vpn_tunnel" "tunnel0" {
   peer_external_gateway           = google_compute_external_vpn_gateway.peer-gw.self_link
   peer_external_gateway_interface = 0
   shared_secret                   = var.shared_secrets[0]
+  region                          = var.region
   router                          = google_compute_router.vpn-rtr.self_link
   vpn_gateway_interface           = 0
 }
@@ -50,6 +51,7 @@ resource "google_compute_vpn_tunnel" "tunnel1" {
   peer_external_gateway           = google_compute_external_vpn_gateway.peer-gw.self_link
   peer_external_gateway_interface = 1
   shared_secret                   = var.shared_secrets[1]
+  region                          = var.region
   router                          = google_compute_router.vpn-rtr.self_link
   vpn_gateway_interface           = 1
 }
@@ -61,6 +63,7 @@ resource "google_compute_router_interface" "vpn-rtr-interface0" {
   name       = "${var.resource_prefix}-interface0"
   router     = google_compute_router.vpn-rtr.name
   ip_range   = var.bgp_cr_session_range[0]
+  region     = var.region
   vpn_tunnel = google_compute_vpn_tunnel.tunnel0.name
 }
 
@@ -69,6 +72,7 @@ resource "google_compute_router_interface" "vpn-rtr-interface1" {
   name       = "${var.resource_prefix}-interface1"
   router     = google_compute_router.vpn-rtr.name
   ip_range   = var.bgp_cr_session_range[1]
+  region     = var.region
   vpn_tunnel = google_compute_vpn_tunnel.tunnel1.name
 }
 
@@ -79,6 +83,7 @@ resource "google_compute_router_peer" "vpn-rtr-peer0" {
   peer_ip_address           = var.peer_remote_session_range[0]
   peer_asn                  = var.peer_asn
   advertised_route_priority = var.advertised_route_priority[0]
+  region                    = var.region
   interface                 = google_compute_router_interface.vpn-rtr-interface0.name
 }
 
@@ -89,5 +94,6 @@ resource "google_compute_router_peer" "vpn-rtr-peer1" {
   peer_ip_address           = var.peer_remote_session_range[1]
   peer_asn                  = var.peer_asn
   advertised_route_priority = var.advertised_route_priority[1]
+  region                    = var.region
   interface                 = google_compute_router_interface.vpn-rtr-interface1.name
 }
