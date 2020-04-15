@@ -7,6 +7,7 @@ resource "google_compute_ha_vpn_gateway" "ha_gateway" {
 
 resource "google_compute_router" "vpn-rtr" {
   name    = var.cloud_router_name
+  region  = var.region
   network = var.network
   bgp {
     asn = var.bgp_asn
