@@ -31,13 +31,13 @@ variable "rhel_disk_usage" {
   type = object({
     enabled              = bool
     blk_dev_name         = string
-    disk_threshold_bytes = number
+    disk_threshold_percentage = number
   })
 
   default = {
     enabled              = false
     blk_dev_name         = "null"
-    disk_threshold_bytes = 0
+    disk_threshold_percentage = 80
   }
 }
 
@@ -46,13 +46,13 @@ variable "debian_disk_usage" {
   type = object({
     enabled              = bool
     blk_dev_name         = string
-    disk_threshold_bytes = number
+    disk_threshold_percentage = number
   })
 
   default = {
     enabled              = false
     blk_dev_name         = "null"
-    disk_threshold_bytes = 0
+    disk_threshold_percentage = 80
   }
 }
 

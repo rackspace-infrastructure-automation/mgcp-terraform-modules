@@ -152,7 +152,7 @@ resource "google_monitoring_alert_policy" "rhel_disk_usage" {
       filter     = <<EOT
               metric.label.device="${lookup(var.rhel_disk_usage, "blk_dev_name", "")}" AND
               metric.label.state="used" AND
-              metric.type="agent.googleapis.com/disk/bytes_used" AND
+              metric.type="agent.googleapis.com/disk/percent_used" AND
               metadata.user_labels.autoscaled="false" AND
               metadata.user_labels.monitored="true" AND
               resource.type="gce_instance"
@@ -165,7 +165,7 @@ resource "google_monitoring_alert_policy" "rhel_disk_usage" {
         cross_series_reducer = "REDUCE_MEAN"
         group_by_fields      = ["project", "resource.label.instance_id", "resource.label.zone"]
       }
-      threshold_value = lookup(var.rhel_disk_usage, "disk_threshold_bytes", 0)
+      threshold_value = lookup(var.rhel_disk_usage, "disk_threshold_percentage", 0)
       trigger {
         count = 1
       }
@@ -197,7 +197,7 @@ resource "google_monitoring_alert_policy" "debian_disk_usage" {
       filter     = <<EOT
               metric.label.device="${lookup(var.debian_disk_usage, "blk_dev_name", "root")}" AND
               metric.label.state="used" AND
-              metric.type="agent.googleapis.com/disk/bytes_used" AND
+              metric.type="agent.googleapis.com/disk/percent_used" AND
               metadata.user_labels.autoscaled="false" AND
               metadata.user_labels.monitored="true" AND
               resource.type="gce_instance"
