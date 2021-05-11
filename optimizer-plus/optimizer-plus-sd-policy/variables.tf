@@ -20,42 +20,12 @@ variable "memory_usage" {
   }
 }
 
-variable "rhel_disk_usage" {
+variable "disk_usage" {
   description = "Disk Usage Parameters"
   type = object({
     enabled              = bool
     blk_dev_name         = string
     disk_threshold_bytes = number
-  })
-
-  default = {
-    enabled                   = false
-    blk_dev_name              = "null"
-    disk_threshold_percentage = 80
-  }
-}
-
-variable "debian_disk_usage" {
-  description = "Disk Usage Parameters"
-  type = object({
-    enabled              = bool
-    blk_dev_name         = string
-    disk_threshold_bytes = number
-  })
-
-  default = {
-    enabled                   = false
-    blk_dev_name              = "null"
-    disk_threshold_percentage = 80
-  }
-}
-
-variable "windows_disk_usage" {
-  description = "Disk Usage Parameters"
-  type = object({
-    enabled                   = bool
-    blk_dev_name              = string
-    disk_threshold_percentage = number
   })
 
   default = {
