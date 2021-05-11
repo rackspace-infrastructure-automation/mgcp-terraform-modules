@@ -1,5 +1,5 @@
 resource "google_monitoring_alert_policy" "uptime_check" {
-  display_name = "rax-mgcp-monitoring-instance-uptime-check"
+  display_name = "rax-optimizer-plus-monitoring-instance-uptime-check"
   combiner     = "OR"
   enabled      = lookup(var.uptime_check, "enabled", false)
   conditions {
@@ -30,18 +30,18 @@ resource "google_monitoring_alert_policy" "uptime_check" {
     mime_type = "text/markdown"
     content   = <<EOT
           1. Ensure instance is responding.\n
-             1. See [GCE Instance Connectivity](https://one.rackspace.com/display/MGCP/GCP+Instance+Connectivity) for connectivity instructions.\n
+             1. Connect to the machine via IAP / SSH / RDP.\n
                 - NOTE: Restart stackdriver monitoring agent if instance is accessible but alert is showing absent uptime metric.\n
           1. If no response, restart instance.\n
              1. `gcloud --project ${var.project_id} compute instances reset INSTANCE`\n
-          1. If unable to diagnosis issue or resolve errors, call customer escalation list \n"
+          1. Troubleshoot or escalate if issue still exists\n"
           EOT
   }
   notification_channels = [google_monitoring_notification_channel.rackspace_emergency.name]
 }
 
 resource "google_monitoring_alert_policy" "memory_usage" {
-  display_name = "rax-mgcp-monitoring-memory_usage"
+  display_name = "rax-optimizer-plus-mmonitoring-memory_usage"
   combiner     = "AND"
   enabled      = lookup(var.memory_usage, "enabled", false)
   conditions {
@@ -71,7 +71,7 @@ resource "google_monitoring_alert_policy" "memory_usage" {
   documentation {
     mime_type = "text/markdown"
     content   = <<EOT
-             1. Resize instance up one machine type
+             1. If required, resize instance up one machine type
              1. `gcloud --project ${var.project_id} compute instances stop INSTANCE_NAME`
              1. `gcloud --project ${var.project_id} compute instances set-machine-type INSTANCE_NAME --machine-type MACHINE_TYPE`
                 - NOTE: see `gcloud compute instances set-machine-type --help` for more options.
@@ -83,7 +83,7 @@ resource "google_monitoring_alert_policy" "memory_usage" {
 
 resource "google_monitoring_alert_policy" "windows_disk_usage" {
   count        = lookup(var.windows_disk_usage, "blk_dev_name", "") == "C:" ? 1 : 0
-  display_name = "rax-mgcp-monitoring-disk_usage-${lookup(var.windows_disk_usage, "blk_dev_name", "")}-emergency"
+  display_name = "rax-optimizer-plus-monitoring-disk_usage-${lookup(var.windows_disk_usage, "blk_dev_name", "")}-emergency"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = lookup(var.windows_disk_usage, "enabled", false)
   conditions {
@@ -115,17 +115,17 @@ resource "google_monitoring_alert_policy" "windows_disk_usage" {
     mime_type = "text/markdown"
     content   = <<EOT
           1. Login to the Windows GCE instance
-             1. See [GCE Instance Connectivity](https://one.rackspace.com/display/MGCP/GCP+Instance+Connectivity) for connectivity instructions.
+             1. Connect to the machine via IAP / SSH / RDP.\n
           1. Run Disk Cleanup Utility
              1. From a command prompt (cmd or PS) and run `cleanmgr.exe /d c:`
              1. Press `Cleanup system files`
              1. Select all items and press OK
-          1. If this is still not enough, expand the drive by 10%
+          1. If this is still not enough, you may wish to expand the drive by 10%
              1. `gcloud --project ${var.project_id} compute disks resize DISK_NAME --size CURRENT_SIZE+10%`
              1. Open Disk Management (run diskmgmt.msc from cmd or PS), right click on the C: partition, and select `Extend Volume`
              1. Select to expand the drive to the maximum available size and press OK
-          1. Identify the largest folders and inform the customer
-             1. From PowerSheel download Treesize with the following command:
+          1. Identify the largest folders
+             1. From PowerShell download Treesize with the following command:
              gsutil cp gs://rs-windows-remediation/TreeSize.exe $env:USERPROFILE\Desktop
              1. Locate `TreeSize.exe` in the VM Desktop and execute it
              1. Double click on the C: drive to Scan.
@@ -134,8 +134,6 @@ resource "google_monitoring_alert_policy" "windows_disk_usage" {
              1. Copy and paste the file into your local desktop
              1. Update the ticket informing the customer that we have expanded the drive by 10% and request him to review the list of the largest folders attached to the ticket
              1. Attach the excel file to the ticket
-          1. If the C: drive fills up again and the alert keeps firing
-             1. Call the customer
           EOT
   }
   notification_channels = [google_monitoring_notification_channel.rackspace_emergency.name]
@@ -143,7 +141,7 @@ resource "google_monitoring_alert_policy" "windows_disk_usage" {
 
 resource "google_monitoring_alert_policy" "rhel_disk_usage" {
   count        = lookup(var.rhel_disk_usage, "blk_dev_name", "") == "sda1" ? 1 : 0
-  display_name = "rax-mgcp-monitoring-disk_usage-${lookup(var.rhel_disk_usage, "blk_dev_name", "")}-emergency"
+  display_name = "rax-optimizer-plus-monitoring-disk_usage-${lookup(var.rhel_disk_usage, "blk_dev_name", "")}-emergency"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = lookup(var.windows_disk_usage, "enabled", false)
   conditions {
@@ -188,7 +186,7 @@ resource "google_monitoring_alert_policy" "rhel_disk_usage" {
 
 resource "google_monitoring_alert_policy" "debian_disk_usage" {
   count        = lookup(var.debian_disk_usage, "blk_dev_name", "") == "root" ? 1 : 0
-  display_name = "rax-mgcp-monitoring-disk_usage-${lookup(var.debian_disk_usage, "blk_dev_name", "")}-emergency"
+  display_name = "rax-optimizer-plus-monitoring-disk_usage-${lookup(var.debian_disk_usage, "blk_dev_name", "")}-emergency"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = lookup(var.windows_disk_usage, "enabled", false)
   conditions {
@@ -229,52 +227,4 @@ resource "google_monitoring_alert_policy" "debian_disk_usage" {
           EOT
   }
   notification_channels = [google_monitoring_notification_channel.rackspace_emergency.name]
-}
-
-resource "google_monitoring_alert_policy" "nat_gw" {
-  count        = lookup(var.nat_alert, "enabled", false) == true ? 1 : 0
-  display_name = "rax-mgcp-monitoring-nat_gw_dropped_conn-emergency"
-  combiner     = "OR"
-  enabled      = lookup(var.nat_alert, "enabled", false)
-  conditions {
-    display_name = "NAT Gateway Dropped Connections"
-    condition_threshold {
-      filter     = <<EOT
-              metric.type="logging.googleapis.com/user/nat_gw_dropped_conn"
-              resource.type="nat_gateway"
-      EOT
-      duration   = "0s"
-      comparison = "COMPARISON_GT"
-      aggregations {
-        alignment_period     = "60s"
-        per_series_aligner   = "ALIGN_SUM"
-        cross_series_reducer = "REDUCE_SUM"
-      }
-      trigger {
-        count = 1
-      }
-    }
-  }
-  documentation {
-    mime_type = "text/markdown"
-    content   = <<EOT
-             1. Increase `minPortsPerVm`
-                1. See the [compute_router_nat](https://www.terraform.io/docs/providers/google/r/compute_router_nat.html) Terraform resource documentation for more information.
-          EOT
-  }
-  notification_channels = [google_monitoring_notification_channel.rackspace_emergency.name]
-  depends_on            = [google_logging_metric.nat_gw_dropped_conn]
-}
-
-### NAT GW Logging metric
-
-resource "google_logging_metric" "nat_gw_dropped_conn" {
-  count  = lookup(var.nat_alert, "enabled", false) == true ? 1 : 0
-  name   = "nat_gw_dropped_conn"
-  filter = "resource.type=nat_gateway AND jsonPayload.allocation_status=DROPPED"
-  metric_descriptor {
-    metric_kind = "DELTA"
-    value_type  = "INT64"
-    unit        = "1"
-  }
 }
