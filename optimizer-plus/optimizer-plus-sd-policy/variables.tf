@@ -25,7 +25,7 @@ variable "disk_usage" {
   type = object({
     enabled              = bool
     blk_dev_name         = string
-    disk_threshold_bytes = number
+    disk_threshold_percentage = number
   })
 
   default = {
@@ -33,9 +33,4 @@ variable "disk_usage" {
     blk_dev_name              = "null"
     disk_threshold_percentage = 80
   }
-}
-
-variable "uptime_check" {
-  description = "Uptime Check Parameters"
-  type        = map
 }

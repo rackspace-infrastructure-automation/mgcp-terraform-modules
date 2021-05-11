@@ -1,7 +1,11 @@
+provider "google" {
+  project = var.project_id
+}
+
 resource "google_monitoring_alert_policy" "uptime_check" {
   display_name = "rax-optimizer-plus-monitoring-instance-uptime-check"
   combiner     = "OR"
-  enabled      = lookup(var.uptime_check, "enabled", false)
+  enabled      = true
   conditions {
     display_name = "Uptime check for GCE INSTANCE - Platform"
     condition_threshold {
@@ -31,7 +35,7 @@ resource "google_monitoring_alert_policy" "uptime_check" {
 resource "google_monitoring_alert_policy" "memory_usage" {
   display_name = "rax-optimizer-plus-mmonitoring-memory_usage"
   combiner     = "AND"
-  enabled      = lookup(var.memory_usage, "enabled", false)
+  enabled      = true
   conditions {
     display_name = "Metric Threshold on All Instance (GCE)s"
     condition_threshold {
@@ -59,15 +63,14 @@ resource "google_monitoring_alert_policy" "memory_usage" {
 }
 
 resource "google_monitoring_alert_policy" "disk_usage" {
-  count        = lookup(var.disk_usage, "blk_dev_name", "") == "C:" ? 1 : 0
-  display_name = "rax-optimizer-plus-monitoring-disk_usage-${lookup(var.disk_usage, "blk_dev_name", "")}-emergency"
+  display_name = "rax-optimizer-plus-monitoring-disk_usage-${lookup(var.disk_usage, "blk_dev_name", "")}"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
-  enabled      = lookup(var.disk_usage, "enabled", false)
+  enabled      = true  
   conditions {
     display_name = "Metric Threshold on All Instance (GCE)s"
     condition_threshold {
       filter     = <<EOT
-              metric.label.device="${lookup(var.isk_usage, "blk_dev_name", 90)}" AND
+              metric.label.device="${lookup(var.disk_usage, "blk_dev_name", 90)}" AND
               metric.label.state="used" AND
               metric.type="agent.googleapis.com/disk/percent_used" AND
               metadata.user_labels.autoscaled!="true"
