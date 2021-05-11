@@ -2,10 +2,6 @@ variable "project_id" {
   type = string
 }
 
-variable "watchman_token" {
-  type = string
-}
-
 variable "enabled" {
   type    = bool
   default = false
@@ -24,10 +20,8 @@ variable "memory_usage" {
   }
 }
 
-
-
 variable "rhel_disk_usage" {
-  description = "Memory Usage Parameters"
+  description = "Disk Usage Parameters"
   type = object({
     enabled              = bool
     blk_dev_name         = string
@@ -37,12 +31,12 @@ variable "rhel_disk_usage" {
   default = {
     enabled              = false
     blk_dev_name         = "null"
-    disk_threshold_bytes = 0
+    disk_threshold_percentage = 80
   }
 }
 
 variable "debian_disk_usage" {
-  description = "Memory Usage Parameters"
+  description = "Disk Usage Parameters"
   type = object({
     enabled              = bool
     blk_dev_name         = string
@@ -52,12 +46,12 @@ variable "debian_disk_usage" {
   default = {
     enabled              = false
     blk_dev_name         = "null"
-    disk_threshold_bytes = 0
+    disk_threshold_percentage = 80
   }
 }
 
 variable "windows_disk_usage" {
-  description = "Memory Usage Parameters"
+  description = "Disk Usage Parameters"
   type = object({
     enabled                   = bool
     blk_dev_name              = string
@@ -72,15 +66,6 @@ variable "windows_disk_usage" {
 }
 
 variable "uptime_check" {
-  description = "Memory Usage Parameters"
+  description = "Uptime Check Parameters"
   type        = map
-}
-
-
-variable "nat_alert" {
-  description = "Memory Usage Parameters"
-  type        = map
-  default = {
-    enabled = false
-  }
 }
