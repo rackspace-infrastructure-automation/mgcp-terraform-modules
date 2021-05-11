@@ -16,7 +16,7 @@ variable "memory_usage" {
 
   default = {
     enabled       = false
-    mem_threshold = 100
+    mem_threshold = 90
   }
 }
 

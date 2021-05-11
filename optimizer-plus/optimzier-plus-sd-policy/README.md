@@ -14,13 +14,13 @@ module "rs_sd_policy" {
 rhel_disk_usage {
     enabled = true
     blk_dev_name = "sda1"
-    disk_threshold_bytes = 10737418240
+    disk_threshold_percentage = 90
 }
 
 debian_disk_usage {
     enabled = true
     blk_dev_name = "root"
-    disk_threshold_bytes = 10737418240
+    disk_threshold_percentage = 90
 }
 
 windows_disk_usage {
@@ -53,7 +53,6 @@ memory_usage {
 | project\_id | n/a | `string` | n/a | yes |
 | rhel\_disk\_usage | Memory Usage Parameters | <pre>object({<br>    enabled              = bool<br>    blk_dev_name         = string<br>    disk_threshold_bytes = number<br>  })<br></pre> | <pre>{<br>  "blk_dev_name": "null",<br>  "disk_threshold_bytes": 0,<br>  "enabled": false<br>}<br></pre> | no |
 | uptime\_check | Memory Usage Parameters | `map` | n/a | yes |
-| watchman\_token | n/a | `string` | n/a | yes |
 | windows\_disk\_usage | Memory Usage Parameters | <pre>object({<br>    enabled                   = bool<br>    blk_dev_name              = string<br>    disk_threshold_percentage = number<br>  })<br></pre> | <pre>{<br>  "blk_dev_name": "null",<br>  "disk_threshold_percentage": 80,<br>  "enabled": false<br>}<br></pre> | no |
 
 ## Outputs
