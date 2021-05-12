@@ -21,7 +21,7 @@ resource "google_monitoring_alert_policy" "uptime_check" {
         alignment_period     = "60s"
         per_series_aligner   = "ALIGN_RATE"
         cross_series_reducer = "REDUCE_SUM"
-        group_by_fields      = ["project", "resource.label.instance_id", "resource.label.zone"]
+        group_by_fields      = ["project", "metadata.system_labels.name", "resource.label.zone"]
       }
       threshold_value = 1
       trigger {
@@ -51,9 +51,9 @@ resource "google_monitoring_alert_policy" "cpu_usage" {
         alignment_period     = "60s"
         per_series_aligner   = "ALIGN_MEAN"
         cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["project", "resource.label.instance_id", "resource.label.zone"]
+        group_by_fields      = ["project", "metadata.system_labels.name", "resource.label.zone"]
       }
-      threshold_value = 1.0
+      threshold_value = 0.95
       trigger {
         count = 1
       }
@@ -81,7 +81,7 @@ resource "google_monitoring_alert_policy" "memory_usage" {
         alignment_period     = "60s"
         per_series_aligner   = "ALIGN_MEAN"
         cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["project", "resource.label.instance_id", "resource.label.zone"]
+        group_by_fields      = ["project", "metadata.system_labels.name", "resource.label.zone"]
       }
       threshold_value = 90
       trigger {
@@ -110,7 +110,7 @@ resource "google_monitoring_alert_policy" "disk_usage" {
         alignment_period     = "60s"
         per_series_aligner   = "ALIGN_MEAN"
         cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["project", "resource.label.instance_id", "metric.label.device" , "resource.label.zone"]
+        group_by_fields      = ["project", "metadata.system_labels.name", "metric.label.device" , "resource.label.zone"]
       }
       threshold_value = 90
       trigger {
