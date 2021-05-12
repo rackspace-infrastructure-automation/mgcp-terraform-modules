@@ -11,8 +11,8 @@ resource "google_monitoring_alert_policy" "uptime_check" {
     condition_threshold {
       filter     = <<EOT
               metric.type="compute.googleapis.com/instance/uptime" AND
-              metadata.user_labels.autoscaled!="true"
-              metadata.user_labels.monitored!="false"
+              metadata.user_labels.autoscaled="false" AND
+              metadata.user_labels.monitored="true" AND
               resource.type="gce_instance"
       EOT
       duration   = "900s"
@@ -33,20 +33,19 @@ resource "google_monitoring_alert_policy" "uptime_check" {
 }
 
 resource "google_monitoring_alert_policy" "cpu_usage" {
-  display_name = "rax-optimizer-plus-mmonitoring-cpu_usage"
+  display_name = "rax-optimizer-plus-monitoring-cpu_usage"
   combiner     = "AND"
   enabled      = true
   conditions {
     display_name = "Metric Threshold on All Instance (GCE)s"
     condition_threshold {
       filter     = <<EOT
-              metric.label.state="used" AND
-              metric.type="agent.googleapis.com/cpu/percent_used" AND
-              metadata.user_labels.autoscaled!="true"
-              metadata.user_labels.monitored!="false"
+              metric.type="compute.googleapis.com/instance/cpu/utilization" AND
+              metadata.user_labels.autoscaled="false" AND
+              metadata.user_labels.monitored="true" AND
               resource.type="gce_instance"
       EOT
-      duration   = "60s"
+      duration   = "300s"
       comparison = "COMPARISON_GT"
       aggregations {
         alignment_period     = "60s"
@@ -54,16 +53,16 @@ resource "google_monitoring_alert_policy" "cpu_usage" {
         cross_series_reducer = "REDUCE_MEAN"
         group_by_fields      = ["project", "resource.label.instance_id", "resource.label.zone"]
       }
-      threshold_value = lookup(var.cpu_usage, "cpu_threshold", 100)
+      threshold_value = 1.0
       trigger {
-        count = 5
+        count = 1
       }
     }
   }
 }
 
 resource "google_monitoring_alert_policy" "memory_usage" {
-  display_name = "rax-optimizer-plus-mmonitoring-memory_usage"
+  display_name = "rax-optimizer-plus-monitoring-memory_usage"
   combiner     = "AND"
   enabled      = true
   conditions {
@@ -72,8 +71,8 @@ resource "google_monitoring_alert_policy" "memory_usage" {
       filter     = <<EOT
               metric.label.state="used" AND
               metric.type="agent.googleapis.com/memory/percent_used" AND
-              metadata.user_labels.autoscaled!="true"
-              metadata.user_labels.monitored!="false"
+              metadata.user_labels.autoscaled="false" AND
+              metadata.user_labels.monitored="true" AND
               resource.type="gce_instance"
       EOT
       duration   = "60s"
@@ -84,7 +83,7 @@ resource "google_monitoring_alert_policy" "memory_usage" {
         cross_series_reducer = "REDUCE_MEAN"
         group_by_fields      = ["project", "resource.label.instance_id", "resource.label.zone"]
       }
-      threshold_value = lookup(var.memory_usage, "mem_threshold", 90)
+      threshold_value = 90
       trigger {
         count = 1
       }
@@ -93,18 +92,16 @@ resource "google_monitoring_alert_policy" "memory_usage" {
 }
 
 resource "google_monitoring_alert_policy" "disk_usage" {
-  display_name = "rax-optimizer-plus-monitoring-disk_usage-${lookup(var.disk_usage, "blk_dev_name", "")}"
+  display_name = "rax-optimizer-plus-monitoring-disk_usage"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = true  
   conditions {
     display_name = "Metric Threshold on All Instance (GCE)s"
     condition_threshold {
       filter     = <<EOT
-              metric.label.device="${lookup(var.disk_usage, "blk_dev_name", 90)}" AND
-              metric.label.state="used" AND
               metric.type="agent.googleapis.com/disk/percent_used" AND
-              metadata.user_labels.autoscaled!="true"
-              metadata.user_labels.monitored!="false"
+              metadata.user_labels.autoscaled="false" AND
+              metadata.user_labels.monitored="true" AND
               resource.type="gce_instance"
       EOT
       duration   = "60s"
@@ -113,9 +110,9 @@ resource "google_monitoring_alert_policy" "disk_usage" {
         alignment_period     = "60s"
         per_series_aligner   = "ALIGN_MEAN"
         cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["project", "resource.label.instance_id", "resource.label.zone"]
+        group_by_fields      = ["project", "resource.label.instance_id", "metric.label.device" , "resource.label.zone"]
       }
-      threshold_value = lookup(var.disk_usage, "disk_threshold_percentage", 90)
+      threshold_value = 90
       trigger {
         count = 1
       }

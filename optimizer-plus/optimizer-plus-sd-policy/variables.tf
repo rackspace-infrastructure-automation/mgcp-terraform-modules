@@ -11,12 +11,12 @@ variable "cpu_usage" {
   description = "CPU Usage Parameters"
   type = object({
     enabled       = bool
-    mem_threshold = number
+    cpu_threshold   = number
   })
 
   default = {
     enabled       = false
-    cpu_threshold = 100
+    cpu_threshold   = 0.9
   }
 }
 
