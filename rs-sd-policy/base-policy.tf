@@ -34,7 +34,46 @@ resource "google_monitoring_alert_policy" "uptime_check" {
                 - NOTE: Restart stackdriver monitoring agent if instance is accessible but alert is showing absent uptime metric.\n
           1. If no response, restart instance.\n
              1. `gcloud --project ${var.project_id} compute instances reset INSTANCE`\n
-          1. If unable to diagnosis issue or resolve errors, call customer escalation list \n"
+          1. If unable to diagnosis issue or resolve errors, call customer escalation list \n
+          EOT
+  }
+  notification_channels = [google_monitoring_notification_channel.rackspace_emergency.name]
+}
+
+resource "google_monitoring_alert_policy" "disk_usage" {
+  count        = var.disk_usage["disk_percentage"] > 0 ? 1 : 0
+  display_name = "rax-mgcp-monitoring-disk_usge-emergency"
+  combiner     = "AND_WITH_MATCHING_RESOURCE"
+  enabled      = lookup(var.disk_usage, "enabled", false)
+  conditions {
+    display_name = "Metric Threshold on All Instance (GCE)s"
+    condition_threshold {
+      filter     = <<EOT
+              metric.label.state="used" AND
+              metric.type="agent.googleapis.com/disk/percent_used" AND
+              metadata.user_labels.autoscaled="false" AND
+              metadata.user_labels.monitored="true" AND
+              resource.type="gce_instance" AND
+              metric.label."device"!=monitoring.regex.full_match(".*(loop[0-9]|tmpfs|udev).*")
+      EOT
+      duration   = "60s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "60s"
+        per_series_aligner   = "ALIGN_MEAN"
+        cross_series_reducer = "REDUCE_MEAN"
+        group_by_fields      = ["project", "resource.label.instance_id", "resource.label.zone"]
+      }
+      threshold_value = lookup(var.disk_usage, "disk_percentage", 90)
+      trigger {
+        count = 1
+      }
+    }
+  }
+  documentation {
+    mime_type = "text/markdown"
+    content   = <<EOT
+      1. See [Wiki](https://one.rackspace.com/display/MGCP/MGCP+-+Base+Policy+-+Disk+Usage+-+OS+resize?searchId=K4NH6FXY6)
           EOT
   }
   notification_channels = [google_monitoring_notification_channel.rackspace_emergency.name]
@@ -145,14 +184,14 @@ resource "google_monitoring_alert_policy" "rhel_disk_usage" {
   count        = lookup(var.rhel_disk_usage, "blk_dev_name", "") == "sda1" ? 1 : 0
   display_name = "rax-mgcp-monitoring-disk_usage-${lookup(var.rhel_disk_usage, "blk_dev_name", "")}-emergency"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
-  enabled      = lookup(var.windows_disk_usage, "enabled", false)
+  enabled      = lookup(var.rhel_disk_usage, "enabled", false)
   conditions {
     display_name = "Metric Threshold on All Instance (GCE)s"
     condition_threshold {
       filter     = <<EOT
               metric.label.device="${lookup(var.rhel_disk_usage, "blk_dev_name", "")}" AND
               metric.label.state="used" AND
-              metric.type="agent.googleapis.com/disk/percent_used" AND
+              metric.type="agent.googleapis.com/disk/bytes_used" AND
               metadata.user_labels.autoscaled="false" AND
               metadata.user_labels.monitored="true" AND
               resource.type="gce_instance"
@@ -165,7 +204,7 @@ resource "google_monitoring_alert_policy" "rhel_disk_usage" {
         cross_series_reducer = "REDUCE_MEAN"
         group_by_fields      = ["project", "resource.label.instance_id", "resource.label.zone"]
       }
-      threshold_value = lookup(var.rhel_disk_usage, "disk_threshold_percentage", 0)
+      threshold_value = lookup(var.rhel_disk_usage, "disk_threshold_bytes", 0)
       trigger {
         count = 1
       }
@@ -190,14 +229,14 @@ resource "google_monitoring_alert_policy" "debian_disk_usage" {
   count        = lookup(var.debian_disk_usage, "blk_dev_name", "") == "root" ? 1 : 0
   display_name = "rax-mgcp-monitoring-disk_usage-${lookup(var.debian_disk_usage, "blk_dev_name", "")}-emergency"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
-  enabled      = lookup(var.windows_disk_usage, "enabled", false)
+  enabled      = lookup(var.debian_disk_usage, "enabled", false)
   conditions {
     display_name = "Metric Threshold on All Instance (GCE)s"
     condition_threshold {
       filter     = <<EOT
               metric.label.device="${lookup(var.debian_disk_usage, "blk_dev_name", "root")}" AND
               metric.label.state="used" AND
-              metric.type="agent.googleapis.com/disk/percent_used" AND
+              metric.type="agent.googleapis.com/disk/bytes_used" AND
               metadata.user_labels.autoscaled="false" AND
               metadata.user_labels.monitored="true" AND
               resource.type="gce_instance"
