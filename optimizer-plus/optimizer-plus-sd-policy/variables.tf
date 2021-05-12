@@ -7,6 +7,19 @@ variable "enabled" {
   default = false
 }
 
+variable "cpu_usage" {
+  description = "CPU Usage Parameters"
+  type = object({
+    enabled       = bool
+    mem_threshold = number
+  })
+
+  default = {
+    enabled       = false
+    cpu_threshold = 100
+  }
+}
+
 variable "memory_usage" {
   description = "Memory Usage Parameters"
   type = object({

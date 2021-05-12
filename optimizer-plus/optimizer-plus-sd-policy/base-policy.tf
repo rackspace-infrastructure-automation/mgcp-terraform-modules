@@ -32,6 +32,36 @@ resource "google_monitoring_alert_policy" "uptime_check" {
   }
 }
 
+resource "google_monitoring_alert_policy" "cpu_usage" {
+  display_name = "rax-optimizer-plus-mmonitoring-cpu_usage"
+  combiner     = "AND"
+  enabled      = true
+  conditions {
+    display_name = "Metric Threshold on All Instance (GCE)s"
+    condition_threshold {
+      filter     = <<EOT
+              metric.label.state="used" AND
+              metric.type="agent.googleapis.com/cpu/percent_used" AND
+              metadata.user_labels.autoscaled!="true"
+              metadata.user_labels.monitored!="false"
+              resource.type="gce_instance"
+      EOT
+      duration   = "60s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "60s"
+        per_series_aligner   = "ALIGN_MEAN"
+        cross_series_reducer = "REDUCE_MEAN"
+        group_by_fields      = ["project", "resource.label.instance_id", "resource.label.zone"]
+      }
+      threshold_value = lookup(var.cpu_usage, "cpu_threshold", 100)
+      trigger {
+        count = 5
+      }
+    }
+  }
+}
+
 resource "google_monitoring_alert_policy" "memory_usage" {
   display_name = "rax-optimizer-plus-mmonitoring-memory_usage"
   combiner     = "AND"
