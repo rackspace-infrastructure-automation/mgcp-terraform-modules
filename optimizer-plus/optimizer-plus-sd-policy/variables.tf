@@ -16,7 +16,7 @@ variable "cpu_usage" {
 
   default = {
     enabled       = false
-    cpu_threshold   = 0.9
+    cpu_threshold   = 0.95
   }
 }
 
@@ -37,13 +37,11 @@ variable "disk_usage" {
   description = "Disk Usage Parameters"
   type = object({
     enabled              = bool
-    blk_dev_name         = string
     disk_threshold_percentage = number
   })
 
   default = {
     enabled                   = false
-    blk_dev_name              = "null"
-    disk_threshold_percentage = 80
+    disk_threshold_percentage = 90
   }
 }
