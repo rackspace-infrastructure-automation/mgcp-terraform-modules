@@ -102,7 +102,9 @@ resource "google_monitoring_alert_policy" "disk_usage" {
               metric.type="agent.googleapis.com/disk/percent_used" AND
               metadata.user_labels.autoscaled="false" AND
               metadata.user_labels.monitored="true" AND
-              resource.type="gce_instance"
+              resource.type="gce_instance" AND
+              metric.label.device!=monitoring.regex.full_match(".*(loop[0-9]|tmpfs|udev).*")
+
       EOT
       duration   = "60s"
       comparison = "COMPARISON_GT"
