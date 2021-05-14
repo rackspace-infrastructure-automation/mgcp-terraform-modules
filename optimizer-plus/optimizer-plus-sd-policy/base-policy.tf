@@ -15,7 +15,7 @@ resource "google_monitoring_alert_policy" "uptime_check" {
               metadata.user_labels.monitored="true" AND
               resource.type="gce_instance"
       EOT
-      duration   = "900s"
+      duration   = "300s"
       comparison = "COMPARISON_LT"
       aggregations {
         alignment_period     = "60s"
