@@ -94,7 +94,7 @@ resource "google_monitoring_alert_policy" "memory_usage" {
 resource "google_monitoring_alert_policy" "disk_usage" {
   display_name = "rax-optimizer-plus-monitoring-disk_usage"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
-  enabled      = true  
+  enabled      = true
   conditions {
     display_name = "Metric Threshold on All Instance (GCE)s"
     condition_threshold {
@@ -110,7 +110,7 @@ resource "google_monitoring_alert_policy" "disk_usage" {
         alignment_period     = "60s"
         per_series_aligner   = "ALIGN_MEAN"
         cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["project", "metadata.system_labels.name", "metric.label.device" , "resource.label.zone"]
+        group_by_fields      = ["project", "metadata.system_labels.name", "metric.label.device", "resource.label.zone"]
       }
       threshold_value = 90
       trigger {
