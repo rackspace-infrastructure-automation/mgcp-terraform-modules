@@ -7,6 +7,19 @@ variable "enabled" {
   default = false
 }
 
+variable "uptime_check" {
+  description = "Uptime Check Parameters"
+  type = object({
+    enabled       = bool
+    uptime_threshold   = number
+  })
+
+  default = {
+    enabled       = false
+    uptime_threshold   = 1
+  }
+}
+
 variable "cpu_usage" {
   description = "CPU Usage Parameters"
   type = object({
