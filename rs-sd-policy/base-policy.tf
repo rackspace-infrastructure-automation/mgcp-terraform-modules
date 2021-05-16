@@ -17,7 +17,7 @@ resource "google_monitoring_alert_policy" "uptime_check" {
         alignment_period     = "60s"
         per_series_aligner   = "ALIGN_RATE"
         cross_series_reducer = "REDUCE_SUM"
-        group_by_fields      = ["resource.label.instance_id"]
+        group_by_fields      = ["project", "metadata.system_labels.name", "resource.label.zone", "resource.label.instance_id"]
       }
       threshold_value = 1
       trigger {
@@ -34,7 +34,46 @@ resource "google_monitoring_alert_policy" "uptime_check" {
                 - NOTE: Restart stackdriver monitoring agent if instance is accessible but alert is showing absent uptime metric.\n
           1. If no response, restart instance.\n
              1. `gcloud --project ${var.project_id} compute instances reset INSTANCE`\n
-          1. If unable to diagnosis issue or resolve errors, call customer escalation list \n"
+          1. If unable to diagnosis issue or resolve errors, call customer escalation list \n
+          EOT
+  }
+  notification_channels = [google_monitoring_notification_channel.rackspace_emergency.name]
+}
+
+resource "google_monitoring_alert_policy" "disk_usage" {
+  count        = var.disk_usage["disk_percentage"] > 0 ? 1 : 0
+  display_name = "rax-mgcp-monitoring-disk_usage-emergency"
+  combiner     = "OR"
+  enabled      = lookup(var.disk_usage, "enabled", false)
+  conditions {
+    display_name = "Metric Threshold on All Instance (GCE)s"
+    condition_threshold {
+      filter     = <<EOT
+              metric.label.state="used" AND
+              metric.type="agent.googleapis.com/disk/percent_used" AND
+              metadata.user_labels.autoscaled="false" AND
+              metadata.user_labels.monitored="true" AND
+              resource.type="gce_instance" AND
+              metric.label."device"!=monitoring.regex.full_match(".*(loop[0-9]|tmpfs|udev).*")
+      EOT
+      duration   = "60s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "60s"
+        per_series_aligner   = "ALIGN_MEAN"
+        cross_series_reducer = "REDUCE_MEAN"
+        group_by_fields      = ["project", "metadata.system_labels.name", "metric.label.device", "resource.label.zone", "resource.label.instance_id"]
+      }
+      threshold_value = lookup(var.disk_usage, "disk_percentage", 90)
+      trigger {
+        count = 1
+      }
+    }
+  }
+  documentation {
+    mime_type = "text/markdown"
+    content   = <<EOT
+      1. See [Wiki](https://one.rackspace.com/display/MGCP/MGCP+-+Base+Policy+-+Disk+Usage+-+OS+resize)
           EOT
   }
   notification_channels = [google_monitoring_notification_channel.rackspace_emergency.name]
@@ -60,7 +99,7 @@ resource "google_monitoring_alert_policy" "memory_usage" {
         alignment_period     = "60s"
         per_series_aligner   = "ALIGN_MEAN"
         cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["project", "resource.label.instance_id", "resource.label.zone"]
+        group_by_fields      = ["project", "metadata.system_labels.name", "resource.label.instance_id", "resource.label.zone"]
       }
       threshold_value = lookup(var.memory_usage, "mem_threshold", 90)
       trigger {
@@ -145,7 +184,7 @@ resource "google_monitoring_alert_policy" "rhel_disk_usage" {
   count        = lookup(var.rhel_disk_usage, "blk_dev_name", "") == "sda1" ? 1 : 0
   display_name = "rax-mgcp-monitoring-disk_usage-${lookup(var.rhel_disk_usage, "blk_dev_name", "")}-emergency"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
-  enabled      = lookup(var.windows_disk_usage, "enabled", false)
+  enabled      = lookup(var.rhel_disk_usage, "enabled", false)
   conditions {
     display_name = "Metric Threshold on All Instance (GCE)s"
     condition_threshold {
@@ -190,7 +229,7 @@ resource "google_monitoring_alert_policy" "debian_disk_usage" {
   count        = lookup(var.debian_disk_usage, "blk_dev_name", "") == "root" ? 1 : 0
   display_name = "rax-mgcp-monitoring-disk_usage-${lookup(var.debian_disk_usage, "blk_dev_name", "")}-emergency"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
-  enabled      = lookup(var.windows_disk_usage, "enabled", false)
+  enabled      = lookup(var.debian_disk_usage, "enabled", false)
   conditions {
     display_name = "Metric Threshold on All Instance (GCE)s"
     condition_threshold {
@@ -240,8 +279,7 @@ resource "google_monitoring_alert_policy" "nat_gw" {
     display_name = "NAT Gateway Dropped Connections"
     condition_threshold {
       filter     = <<EOT
-              metric.type="logging.googleapis.com/user/nat_gw_dropped_conn"
-              resource.type="nat_gateway"
+          metric.type="logging.googleapis.com/user/nat_gw_dropped_conn" resource.type="nat_gateway"
       EOT
       duration   = "0s"
       comparison = "COMPARISON_GT"
@@ -249,6 +287,8 @@ resource "google_monitoring_alert_policy" "nat_gw" {
         alignment_period     = "60s"
         per_series_aligner   = "ALIGN_SUM"
         cross_series_reducer = "REDUCE_SUM"
+        group_by_fields      = ["resource.label.project_id", "resource.label.router_id", "resource.label.region", "resource.label.gateway_name"]
+
       }
       trigger {
         count = 1

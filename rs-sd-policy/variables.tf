@@ -25,6 +25,18 @@ variable "memory_usage" {
 }
 
 
+variable "disk_usage" {
+  description = "Disk usage Parameters"
+  type = object({
+    enabled         = bool
+    disk_percentage = number
+  })
+
+  default = {
+    enabled         = false
+    disk_percentage = 0
+  }
+}
 
 variable "rhel_disk_usage" {
   description = "Memory Usage Parameters"
