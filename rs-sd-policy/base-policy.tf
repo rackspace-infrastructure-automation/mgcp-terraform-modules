@@ -17,7 +17,7 @@ resource "google_monitoring_alert_policy" "uptime_check" {
         alignment_period     = "60s"
         per_series_aligner   = "ALIGN_RATE"
         cross_series_reducer = "REDUCE_SUM"
-        group_by_fields      = ["resource.label.instance_id"]
+        group_by_fields      = ["project", "metadata.system_labels.name", "resource.label.zone", "resource.label.instance_id"]
       }
       threshold_value = 1
       trigger {
@@ -42,8 +42,8 @@ resource "google_monitoring_alert_policy" "uptime_check" {
 
 resource "google_monitoring_alert_policy" "disk_usage" {
   count        = var.disk_usage["disk_percentage"] > 0 ? 1 : 0
-  display_name = "rax-mgcp-monitoring-disk_usge-emergency"
-  combiner     = "AND_WITH_MATCHING_RESOURCE"
+  display_name = "rax-mgcp-monitoring-disk_usage-emergency"
+  combiner     = "OR"
   enabled      = lookup(var.disk_usage, "enabled", false)
   conditions {
     display_name = "Metric Threshold on All Instance (GCE)s"
@@ -62,7 +62,7 @@ resource "google_monitoring_alert_policy" "disk_usage" {
         alignment_period     = "60s"
         per_series_aligner   = "ALIGN_MEAN"
         cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["project", "resource.label.instance_id", "resource.label.zone"]
+        group_by_fields      = ["project", "metadata.system_labels.name", "metric.label.device", "resource.label.zone", "resource.label.instance_id"]
       }
       threshold_value = lookup(var.disk_usage, "disk_percentage", 90)
       trigger {
@@ -73,7 +73,7 @@ resource "google_monitoring_alert_policy" "disk_usage" {
   documentation {
     mime_type = "text/markdown"
     content   = <<EOT
-      1. See [Wiki](https://one.rackspace.com/display/MGCP/MGCP+-+Base+Policy+-+Disk+Usage+-+OS+resize?searchId=K4NH6FXY6)
+      1. See [Wiki](https://one.rackspace.com/display/MGCP/MGCP+-+Base+Policy+-+Disk+Usage+-+OS+resize)
           EOT
   }
   notification_channels = [google_monitoring_notification_channel.rackspace_emergency.name]
@@ -99,7 +99,7 @@ resource "google_monitoring_alert_policy" "memory_usage" {
         alignment_period     = "60s"
         per_series_aligner   = "ALIGN_MEAN"
         cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["project", "resource.label.instance_id", "resource.label.zone"]
+        group_by_fields      = ["project", "metadata.system_labels.name", "resource.label.instance_id", "resource.label.zone"]
       }
       threshold_value = lookup(var.memory_usage, "mem_threshold", 90)
       trigger {
@@ -279,8 +279,7 @@ resource "google_monitoring_alert_policy" "nat_gw" {
     display_name = "NAT Gateway Dropped Connections"
     condition_threshold {
       filter     = <<EOT
-              metric.type="logging.googleapis.com/user/nat_gw_dropped_conn"
-              resource.type="nat_gateway"
+          metric.type="logging.googleapis.com/user/nat_gw_dropped_conn" resource.type="nat_gateway"
       EOT
       duration   = "0s"
       comparison = "COMPARISON_GT"
@@ -288,6 +287,8 @@ resource "google_monitoring_alert_policy" "nat_gw" {
         alignment_period     = "60s"
         per_series_aligner   = "ALIGN_SUM"
         cross_series_reducer = "REDUCE_SUM"
+        group_by_fields      = ["resource.label.project_id", "resource.label.router_id", "resource.label.region", "resource.label.gateway_name"]
+
       }
       trigger {
         count = 1
