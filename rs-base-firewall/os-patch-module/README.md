@@ -1,6 +1,8 @@
-# rs-sd-policy
+# os-patch-module
 
 This module creates the Rackspace OS Patch Configuration
+
+https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/os_config_patch_deployment
 
 ```
 module "rs_sd_policy" {
@@ -177,7 +179,7 @@ variable "day_of_week" {
 |------|---------|
 | google | n/a |
 
-## Inputs
+## Inputs - https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/os_config_patch_deployment
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
