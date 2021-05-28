@@ -2,7 +2,13 @@
 
 This module creates the Rackspace OS Patch Configuration
 
+Terraform Guide / Doco:
+
 https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/os_config_patch_deployment
+
+Our Wiki on general usage:
+
+https://one.rackspace.com/pages/viewpage.action?pageId=708014567
 
 ```
 module "rs_sd_policy" {
