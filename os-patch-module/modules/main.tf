@@ -7,9 +7,9 @@ provider "google" {
 terraform {
     required_version = "=>0.13.2"
 }
- 
-module "os_patch_config {
-    source                  = "git@github.com:racker/mgcp-terraform-modules//os-patch-module/?ref=master"
+
+module "os_patch_config" {
+    source                  = "git@github.com:racker/mgcp-terraform-modules/os-patch-module/?ref=master"
     deployment_id_1         = "blue-windows"
     deployment_id_2         = "blue-linux"
     deployment_id_3         = "green-windows"

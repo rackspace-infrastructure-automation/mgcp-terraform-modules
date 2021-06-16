@@ -589,18 +589,17 @@ resource "google_monitoring_alert_policy" "k8s_node_cpu_utilization" {
   notification_channels = [google_monitoring_notification_channel.rackspace_urgent.name]
 }
 
-# Node Non-evictable Memory Usage
+# Node Memory Usage (Bytes)
 
-resource "google_monitoring_alert_policy" "k8s_node_cpu_utilization" {
-  display_name = "rax-amr-monitoring-k8s_node_cpu_utilization"
+resource "google_monitoring_alert_policy" "k8s_node_mem_usage" {
+  display_name = "rax-amr-monitoring-k8s_node_mem_usage"
   combiner     = "AND"
   enabled      = true
   conditions {
     display_name = "Metric Threshold on All Kubernetes Nodes (k8s)"
     condition_threshold {
       filter     = <<EOT
-              metric.type="kubernetes.io/node/cpu/core_usage_time" AND
-              memory_type
+              metric.type="kubernetes.io/node/memory/used_bytes" AND
               metadata.user_labels.monitored="true" AND
               resource.type="k8s_node"
       EOT
@@ -612,7 +611,7 @@ resource "google_monitoring_alert_policy" "k8s_node_cpu_utilization" {
         cross_series_reducer = "REDUCE_MEAN"
         group_by_fields      = ["project", "metadata.system_labels.name", "resource.label.zone"]
       }
-      threshold_value = 0.99
+      threshold_value = 37.6
       trigger {
         count = 1
       }
