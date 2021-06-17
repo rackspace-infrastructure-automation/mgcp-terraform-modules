@@ -10,10 +10,6 @@ output "rackspace_high_id" {
   value = google_monitoring_notification_channel.rackspace_high.name
 }
 
-output "rackspace_high_id" {
-  value = google_monitoring_notification_channel.rackspace_high.name
-}
-
 output "rackspace_urgent_id" {
   value = google_monitoring_notification_channel.rackspace_urgent.name
 }

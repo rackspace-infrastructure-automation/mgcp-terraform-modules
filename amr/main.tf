@@ -1,6 +1,6 @@
 provider "google" {
   version = ">=3.37.0"
-  project = "ops-leonardo-bertini"
+  project = var.project_id
 }
 
 terraform {
@@ -10,7 +10,7 @@ terraform {
 
 module "general_cpu" {
   source                 = "./modules/base-policy"
-  project_id             = "ops-leonardo-bertini"
+  project_id             = var.project_id
   policy_display_name    = "rax-amr-instance-cpu-utilization"
   condition_display_name = "CPU Utilization check for GCE INSTANCEs"
   condition_filter       = <<EOT
@@ -28,6 +28,6 @@ module "general_cpu" {
              4. `gcloud --project ops-leonardo-bertini compute instances start INSTANCE_NAME`
           EOT
   notification_channels  = [module.general_cpu.rackspace_urgent_id]
-  watchman_token         = "123XYZ"
+  watchman_token         = var.watchman_token
   enabled                = true
 }
