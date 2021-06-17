@@ -27,7 +27,7 @@ module "general_cpu" {
                 - NOTE: see `gcloud compute instances set-machine-type --help` for more options.
              4. `gcloud --project ops-leonardo-bertini compute instances start INSTANCE_NAME`
           EOT
-  notification_channels  = [module.google_monitoring_notification_channel.rackspace_emergency]
+  notification_channels  = [module.general_cpu.rackspace_urgent_id]
   watchman_token         = "123XYZ"
   enabled                = true
 }
