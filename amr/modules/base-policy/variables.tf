@@ -10,6 +10,10 @@ variable "policy_display_name" {
   type = string
 }
 
+variable "combiner" {
+  type = string
+}
+
 variable "condition_display_name" {
   type = string
 }

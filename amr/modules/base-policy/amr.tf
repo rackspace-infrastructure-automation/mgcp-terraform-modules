@@ -3,7 +3,7 @@
 
 resource "google_monitoring_alert_policy" "alert_policy_module" {
   display_name = var.policy_display_name
-  combiner     = "OR"
+  combiner     = var.combiner
   enabled      = var.enabled
   conditions {
     display_name = var.condition_display_name
