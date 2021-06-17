@@ -6,7 +6,7 @@ resource "google_monitoring_alert_policy" "uptime_check" {
   combiner     = "OR"
   enabled      = true
   conditions {
-    display_name = "Uptime check for GCE INSTANCE - Platform"
+    display_name = "Uptime check for GCE INSTANCE"
     condition_threshold {
       filter     = <<EOT
               metric.type="compute.googleapis.com/instance/uptime" AND
@@ -640,7 +640,7 @@ resource "google_monitoring_alert_policy" "nat_allocation_failed" {
   combiner     = "OR"
   enabled      = true
   conditions {
-    display_name = "NAT Gateway Allocatoin Failure"
+    display_name = "NAT Gateway Allocation Failure"
     condition_threshold {
       filter     = <<EOT
           metric.type="router.googleapis.com/nat/nat_allocation_failed" 
@@ -680,7 +680,8 @@ resource "google_monitoring_alert_policy" "nat_gw_port_exhaustion" {
     display_name = "NAT Gateway Port Exhaustion"
     condition_threshold {
       filter     = <<EOT
-          metric.type="router.googleapis.com/nat/allocated_ports" resource.type="nat_gateway"
+          metric.type="router.googleapis.com/nat/allocated_ports" 
+          resource.type="nat_gateway"
       EOT
       duration   = "60s"
       comparison = "COMPARISON_GT"
@@ -691,8 +692,9 @@ resource "google_monitoring_alert_policy" "nat_gw_port_exhaustion" {
         group_by_fields      = ["resource.label.project_id", "resource.label.router_id", "resource.label.region", "resource.label.gateway_name"]
 
       }
+      threshold_value = 58060
       trigger {
-        count = 58060
+        count = 1
       }
     }
   }
@@ -705,5 +707,4 @@ resource "google_monitoring_alert_policy" "nat_gw_port_exhaustion" {
           EOT
   }
   notification_channels = [google_monitoring_notification_channel.rackspace_emergency.name]
-  depends_on            = [google_logging_metric.nat_gw_dropped_conn]
 }

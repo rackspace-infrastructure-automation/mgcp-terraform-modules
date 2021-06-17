@@ -10,7 +10,7 @@ resource "google_monitoring_alert_policy" "alert_policy_module" {
     condition_threshold {
       filter     = var.condition_filter
       duration   = var.condition_duration
-      comparison = "COMPARISON_GT"
+      comparison = var.comparison
       aggregations {
         alignment_period     = "60s"
         per_series_aligner   = "ALIGN_MEAN"

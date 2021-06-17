@@ -22,6 +22,11 @@ variable "condition_filter" {
   type = string
 }
 
+variable "comparison" {
+  type = string
+  default = "COMPARISON_GT"
+}
+
 variable "condition_duration" {
   type = string
 }
@@ -31,11 +36,12 @@ variable "runbook_content" {
 }
 
 variable "notification_channels" {
-  type    = list(string)
+  type = list(string)
 }
 
 variable "enabled" {
   type = bool
+  default = true
 }
 
 variable "threshold_value" {
