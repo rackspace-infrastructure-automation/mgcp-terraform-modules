@@ -45,7 +45,6 @@ variable "group_by_fields" {
   type = list(string)
   default = [
     "resource.label.project_id",
-    "metric.label.instance_name",
     "resource.label.zone",
     "resource.label.instance_id"
   ]
