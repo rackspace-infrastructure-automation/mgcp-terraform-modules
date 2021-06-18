@@ -78,3 +78,8 @@ variable "trigger_count" {
   type = number
   default = 1
 }
+
+variable "mime_type" {
+  type = string
+  default = "text/markdown"
+}

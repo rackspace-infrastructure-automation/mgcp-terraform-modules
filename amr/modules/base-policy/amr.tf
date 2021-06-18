@@ -24,7 +24,7 @@ resource "google_monitoring_alert_policy" "alert_policy_module" {
     }
   }
   documentation {
-    mime_type = "text/markdown"
+    mime_type = var.mime_type
     content   = var.runbook_content
   }
   notification_channels = var.notification_channels
