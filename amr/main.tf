@@ -29,137 +29,137 @@ module "gce_cpu_util" {
                            4. `gcloud --project PROJECT_ID  compute instances start INSTANCE_NAME`
                            EOT
   group_by_fields        = ["resource.label.project_id", "metric.label.instance_name", "resource.label.zone", "resource.label.instance_id"]
-  notification_channels  = [module.rackspace_urgent]
+  notification_channels  = [module.rackspace_urgent.notification_id]
   threshold              = 0.99
 }
 
-# module "gce_mem_util" {
-#   source                 = "./modules/base-policy"
-#   project_id             = var.project_id
-#   combiner               = "OR"
-#   policy_display_name    = "rax-amr-gce_mem_util"
-#   condition_display_name = "MEM UTIL for GCE INSTANCEs"
-#   condition_filter       = <<EOT
-#                            metric.label.state="used" AND
-#                            metric.type="agent.googleapis.com/memory/percent_used" AND
-#                            metadata.user_labels.autoscaled="false" AND
-#                            metadata.user_labels.monitored="true" AND
-#                            resource.type="gce_instance"
-#                            EOT
-#   condition_duration     = "300s"
-#   runbook_content        = <<EOT
-#                            1. Resize instance up one machine type with customer approval, use IAC unless this is an emergency
-#                            2. `gcloud --project PROJECT_ID  compute instances stop INSTANCE_NAME`
-#                            3. `gcloud --project PROJECT_ID compute instances set-machine-type INSTANCE_NAME --machine-type MACHINE_TYPE`
-#                               - NOTE: see `gcloud compute instances set-machine-type --help` for more options.
-#                            4. `gcloud --project PROJECT_ID  compute instances start INSTANCE_NAME`
-#                            EOT
-#   notification_channels  = [module.gce_mem_util.rackspace_urgent_id]
-#   watchman_token         = var.watchman_token
-#   threshold              = 99
-# }
+module "gce_mem_util" {
+  source                 = "./modules/base-policy"
+  project_id             = var.project_id
+  combiner               = "OR"
+  policy_display_name    = "rax-amr-gce_mem_util"
+  condition_display_name = "MEM UTIL for GCE INSTANCEs"
+  condition_filter       = <<EOT
+                           metric.label.state="used" AND
+                           metric.type="agent.googleapis.com/memory/percent_used" AND
+                           metadata.user_labels.autoscaled="false" AND
+                           metadata.user_labels.monitored="true" AND
+                           resource.type="gce_instance"
+                           EOT
+  condition_duration     = "300s"
+  runbook_content        = <<EOT
+                           1. Resize instance up one machine type with customer approval, use IAC unless this is an emergency
+                           2. `gcloud --project PROJECT_ID  compute instances stop INSTANCE_NAME`
+                           3. `gcloud --project PROJECT_ID compute instances set-machine-type INSTANCE_NAME --machine-type MACHINE_TYPE`
+                              - NOTE: see `gcloud compute instances set-machine-type --help` for more options.
+                           4. `gcloud --project PROJECT_ID  compute instances start INSTANCE_NAME`
+                           EOT
+  notification_channels  = [module.rackspace_urgent.notification_id]
+  watchman_token         = var.watchman_token
+  threshold              = 99
+}
 
-# module "gce_disk_usage" {
-#   source                 = "./modules/base-policy"
-#   project_id             = var.project_id
-#   combiner               = "AND_WITH_MATCHING_RESOURCE"
-#   policy_display_name    = "rax-amr-gce_disk_usage"
-#   condition_display_name = "DISK USAGE for GCE INSTANCEs"
-#   condition_filter       = <<EOT
-#                            metric.label.state="used" AND
-#                            metric.type="agent.googleapis.com/disk/percent_used" AND
-#                            metadata.user_labels.autoscaled="false" AND
-#                            metadata.user_labels.monitored="true" AND
-#                            resource.type="gce_instance" AND
-#                            metric.label.device!=monitoring.regex.full_match(".*(loop[0-9]|tmpfs|udev).*")
-#                            EOT
-#   condition_duration     = "60s"
-#   runbook_content        = <<EOT
-#                            1. See [Wiki](https://one.rackspace.com/display/MGCP/MGCP+-+Base+Policy+-+Disk+Usage+-+OS+resize)
-#                            EOT
-#   notification_channels  = [module.gce_disk_usage.rackspace_urgent_id]
-#   watchman_token         = var.watchman_token
-#   threshold              = 90
-# }
+module "gce_disk_usage" {
+  source                 = "./modules/base-policy"
+  project_id             = var.project_id
+  combiner               = "AND_WITH_MATCHING_RESOURCE"
+  policy_display_name    = "rax-amr-gce_disk_usage"
+  condition_display_name = "DISK USAGE for GCE INSTANCEs"
+  condition_filter       = <<EOT
+                           metric.label.state="used" AND
+                           metric.type="agent.googleapis.com/disk/percent_used" AND
+                           metadata.user_labels.autoscaled="false" AND
+                           metadata.user_labels.monitored="true" AND
+                           resource.type="gce_instance" AND
+                           metric.label.device!=monitoring.regex.full_match(".*(loop[0-9]|tmpfs|udev).*")
+                           EOT
+  condition_duration     = "60s"
+  runbook_content        = <<EOT
+                           1. See [Wiki](https://one.rackspace.com/display/MGCP/MGCP+-+Base+Policy+-+Disk+Usage+-+OS+resize)
+                           EOT
+  notification_channels  = [module.rackspace_urgent.notification_id]
+  watchman_token         = var.watchman_token
+  threshold              = 90
+}
 
-# module "gce_uptime_check" {
-#   source                 = "./modules/base-policy"
-#   project_id             = var.project_id
-#   combiner               = "OR"
-#   policy_display_name    = "rax-amr-gce_uptime_check"
-#   condition_display_name = "UPTIME CHECK for GCE INSTANCEs"
-#   condition_filter       = <<EOT
-#                            metric.type="compute.googleapis.com/instance/uptime" AND
-#                            metadata.user_labels.autoscaled="false" AND
-#                            metadata.user_labels.monitored="true" AND
-#                            resource.type="gce_instance"
-#                            EOT
-#   condition_duration     = "60s"
-#   comparison             = "COMPARISON_LT"
-#   runbook_content        = <<EOT
-#                            1. Ensure instance is responding.\n
-#                               1. See [GCE Instance Connectivity](https://one.rackspace.com/display/MGCP/GCP+Instance+Connectivity) for connectivity instructions.\n
-#                                  - NOTE: Restart stackdriver monitoring agent if instance is accessible but alert is showing absent uptime metric.\n
-#                            2. If no response, restart instance.\n
-#                               1. `gcloud --project PROJECT_ID compute instances reset INSTANCE`\n
-#                            3. If unable to diagnosis issue or resolve errors, call customer escalation list \n
-#                            EOT
-#   notification_channels  = [output.rackspace_urgent_id]
-#   watchman_token         = var.watchman_token
-#   threshold              = 0
-# }
+module "gce_uptime_check" {
+  source                 = "./modules/base-policy"
+  project_id             = var.project_id
+  combiner               = "OR"
+  policy_display_name    = "rax-amr-gce_uptime_check"
+  condition_display_name = "UPTIME CHECK for GCE INSTANCEs"
+  condition_filter       = <<EOT
+                           metric.type="compute.googleapis.com/instance/uptime" AND
+                           metadata.user_labels.autoscaled="false" AND
+                           metadata.user_labels.monitored="true" AND
+                           resource.type="gce_instance"
+                           EOT
+  condition_duration     = "60s"
+  comparison             = "COMPARISON_LT"
+  runbook_content        = <<EOT
+                           1. Ensure instance is responding.\n
+                              1. See [GCE Instance Connectivity](https://one.rackspace.com/display/MGCP/GCP+Instance+Connectivity) for connectivity instructions.\n
+                                 - NOTE: Restart stackdriver monitoring agent if instance is accessible but alert is showing absent uptime metric.\n
+                           2. If no response, restart instance.\n
+                              1. `gcloud --project PROJECT_ID compute instances reset INSTANCE`\n
+                           3. If unable to diagnosis issue or resolve errors, call customer escalation list \n
+                           EOT
+  notification_channels  = [module.rackspace_urgent.notification_id]
+  watchman_token         = var.watchman_token
+  threshold              = 0
+}
 
 # ### CSQL Monitors
 
-# module "csql_cpu_util" {
-#   source                 = "./modules/base-policy"
-#   project_id             = var.project_id
-#   combiner               = "AND"
-#   policy_display_name    = "rax-amr-monitoring-csql_cpu_util"
-#   condition_display_name = "CPU UTILIZATION for CSQL INSTANCES"
-#   condition_filter       = <<EOT
-#                            metric.type="cloudsql.googleapis.com/database/cpu/utilization" AND
-#                            metadata.user_labels.monitored="true" AND
-#                            resource.type="cloudsql_database"
-#                            EOT
-#   condition_duration     = "900s"
-#   runbook_content        = <<EOT
-#                            1. Resize instance up one machine type with customer approval, use IAC unless this is an emergency
-#                               - NOTE: Restarts can take up to 60 minutes if slow queries or persistent connections are used
-#                            2. `gcloud --project PROJECT_ID sql instances stop INSTANCE_NAME`
-#                            3. `gcloud --project PROJECT_ID sql instances set-machine-type INSTANCE_NAME --machine-type MACHINE_TYPE`
-#                               - NOTE: see `gcloud compute instances set-machine-type --help` for more options.
-#                            4. `gcloud --project PROJECT_ID sql instances start INSTANCE_NAME`
-#                            EOT
-#   notification_channels  = [module.csql_cpu_util.rackspace_urgent_id]
-#   watchman_token         = var.watchman_token
-#   threshold              = 0.99
-# }
+module "csql_cpu_util" {
+  source                 = "./modules/base-policy"
+  project_id             = var.project_id
+  combiner               = "AND"
+  policy_display_name    = "rax-amr-monitoring-csql_cpu_util"
+  condition_display_name = "CPU UTILIZATION for CSQL INSTANCES"
+  condition_filter       = <<EOT
+                           metric.type="cloudsql.googleapis.com/database/cpu/utilization" AND
+                           metadata.user_labels.monitored="true" AND
+                           resource.type="cloudsql_database"
+                           EOT
+  condition_duration     = "900s"
+  runbook_content        = <<EOT
+                           1. Resize instance up one machine type with customer approval, use IAC unless this is an emergency
+                              - NOTE: Restarts can take up to 60 minutes if slow queries or persistent connections are used
+                           2. `gcloud --project PROJECT_ID sql instances stop INSTANCE_NAME`
+                           3. `gcloud --project PROJECT_ID sql instances set-machine-type INSTANCE_NAME --machine-type MACHINE_TYPE`
+                              - NOTE: see `gcloud compute instances set-machine-type --help` for more options.
+                           4. `gcloud --project PROJECT_ID sql instances start INSTANCE_NAME`
+                           EOT
+  notification_channels  = [module.rackspace_urgent.notification_id]
+  watchman_token         = var.watchman_token
+  threshold              = 0.99
+}
 
-# module "csql_mem_util" {
-#   source                 = "./modules/base-policy"
-#   project_id             = var.project_id
-#   combiner               = "OR"
-#   policy_display_name    = "rax-amr-monitoring-csql_memory_util"
-#   condition_display_name = "MEM UTILIZATION for CSQL INSTANCES"
-#   condition_filter       = <<EOT
-#                            metric.type="cloudsql.googleapis.com/database/memory/utilization" AND
-#                            metadata.user_labels.monitored="true" AND
-#                            resource.type="cloudsql_database"
-#                            EOT
-#   condition_duration     = "900s"
-#   runbook_content        = <<EOT
-#                            1. Resize instance up one machine type with customer approval, use IAC unless this is an emergency
-#                               - NOTE: Restarts can take up to 60 minutes if slow queries or persistent connections are used
-#                            2. `gcloud --project PROJECT_ID sql instances stop INSTANCE_NAME`
-#                            3. `gcloud --project PROJECT_ID sql instances set-machine-type INSTANCE_NAME --machine-type MACHINE_TYPE`
-#                               - NOTE: see `gcloud compute instances set-machine-type --help` for more options.
-#                            4. `gcloud --project PROJECT_ID sql instances start INSTANCE_NAME`
-#                            EOT
-#   notification_channels  = [module.csql_mem_util.rackspace_urgent_id]
-#   watchman_token         = var.watchman_token
-#   threshold              = 0.99
-#}
+module "csql_mem_util" {
+  source                 = "./modules/base-policy"
+  project_id             = var.project_id
+  combiner               = "OR"
+  policy_display_name    = "rax-amr-monitoring-csql_memory_util"
+  condition_display_name = "MEM UTILIZATION for CSQL INSTANCES"
+  condition_filter       = <<EOT
+                           metric.type="cloudsql.googleapis.com/database/memory/utilization" AND
+                           metadata.user_labels.monitored="true" AND
+                           resource.type="cloudsql_database"
+                           EOT
+  condition_duration     = "900s"
+  runbook_content        = <<EOT
+                           1. Resize instance up one machine type with customer approval, use IAC unless this is an emergency
+                              - NOTE: Restarts can take up to 60 minutes if slow queries or persistent connections are used
+                           2. `gcloud --project PROJECT_ID sql instances stop INSTANCE_NAME`
+                           3. `gcloud --project PROJECT_ID sql instances set-machine-type INSTANCE_NAME --machine-type MACHINE_TYPE`
+                              - NOTE: see `gcloud compute instances set-machine-type --help` for more options.
+                           4. `gcloud --project PROJECT_ID sql instances start INSTANCE_NAME`
+                           EOT
+  notification_channels  = [module.rackspace_urgent.notification_id]
+  watchman_token         = var.watchman_token
+  threshold              = 0.99
+}
 
 # module "mysql_replica_lag" {
 #   source                 = "./modules/base-policy"
