@@ -238,7 +238,7 @@ module "ngw_allocation_failure" {
                            EOT
   notification_channels  = [module.ngw_allocation_failure.rackspace_urgent_id]
   watchman_token         = var.watchman_token
-  treshold_value         = 1
+  threshold_value         = 1
 }
 
 module "ngw_port_exhaustion" {
