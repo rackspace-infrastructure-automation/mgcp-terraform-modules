@@ -50,5 +50,31 @@ variable "threshold" {
 }
 
 variable "group_by_fields" {
+  type = list(string)
+  default = [
+    "resource.label.project_id",
+    "metric.label.instance_name",
+    "resource.label.zone",
+    "resource.label.instance_id"
+  ]
+}
+
+variable "alignment_period" {
   type = string
+  default = "60s"
+}
+
+variable "per_series_aligner" {
+  type = string
+  default = "ALIGN_MEAN"
+}
+
+variable "cross_series_reducer" {
+  type = string
+  default = "REDUCE_MEAN"
+}
+
+variable "trigger_count" {
+  type = number
+  default = 1
 }

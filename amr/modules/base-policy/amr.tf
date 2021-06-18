@@ -12,14 +12,14 @@ resource "google_monitoring_alert_policy" "alert_policy_module" {
       duration   = var.condition_duration
       comparison = var.comparison
       aggregations {
-        alignment_period     = "60s"
-        per_series_aligner   = "ALIGN_MEAN"
-        cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["resource.label.project_id", "metric.label.instance_name", "resource.label.zone", "resource.label.${var.resource_label}"]
+        alignment_period     = var.alignment_period
+        per_series_aligner   = var.per_series_aligner
+        cross_series_reducer = var.cross_series_reducer
+        group_by_fields      = var.group_by_fields
       }
       threshold_value = var.threshold
       trigger {
-        count = 1
+        count = var.trigger_count
       }
     }
   }
