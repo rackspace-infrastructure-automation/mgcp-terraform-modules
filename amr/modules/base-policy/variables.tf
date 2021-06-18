@@ -44,7 +44,7 @@ variable "enabled" {
   default = true
 }
 
-variable "threshold_value" {
+variable "threshold {
   type = number
   default = 0.9
 }
