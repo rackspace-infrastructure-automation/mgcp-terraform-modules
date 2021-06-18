@@ -29,6 +29,7 @@ module "gce_cpu_util" {
                                - NOTE: see `gcloud compute instances set-machine-type --help` for more options.
                            4. `gcloud --project PROJECT_ID  compute instances start INSTANCE_NAME`
                            EOT
+  group_by_fields        = ["resource.label.project_id", "metric.label.instance_name", "resource.label.zone", "resource.label.instance_id"]
   notification_channels  = [module.gce_cpu_util.rackspace_urgent_id]
   watchman_token         = var.watchman_token
   threshold              = 0.99

@@ -49,7 +49,6 @@ variable "threshold" {
   default = 0.9
 }
 
-variable "resource_label" {
+variable "group_by_fields" {
   type = string
-  default = "instance_id"
 }
