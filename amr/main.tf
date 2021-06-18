@@ -31,7 +31,7 @@ module "gce_cpu_util" {
                            EOT
   notification_channels  = [module.gce_cpu_util.rackspace_urgent_id]
   watchman_token         = var.watchman_token
-  threshold_value        = 0.99
+  threshold        = 0.99
 }
 
 module "gce_mem_util" {
@@ -107,7 +107,7 @@ module "gce_uptime_check" {
                            EOT
   notification_channels  = [module.gce_uptime_check.rackspace_urgent_id]
   watchman_token         = var.watchman_token
-  threshold_value        = 0
+  threshold        = 0
 }
 
 ### CSQL Monitors
@@ -239,7 +239,7 @@ module "ngw_allocation_failure" {
                            EOT
   notification_channels  = [module.ngw_allocation_failure.rackspace_urgent_id]
   watchman_token         = var.watchman_token
-  threshold_value         = 1
+  threshold         = 1
 }
 
 module "ngw_port_exhaustion" {
@@ -260,5 +260,5 @@ module "ngw_port_exhaustion" {
                            EOT
   notification_channels  = [module.ngw_port_exhaustion.rackspace_urgent_id]
   watchman_token         = var.watchman_token
-  threshold_value        = 58060
+  threshold        = 58060
 }
