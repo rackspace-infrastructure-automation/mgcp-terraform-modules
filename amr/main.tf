@@ -35,7 +35,6 @@ module "gce_cpu_util" {
 
 module "gce_mem_util" {
   source                 = "./modules/base-policy"
-  project_id             = var.project_id
   combiner               = "OR"
   policy_display_name    = "rax-amr-gce_mem_util"
   condition_display_name = "MEM UTIL for GCE INSTANCEs"
@@ -55,13 +54,11 @@ module "gce_mem_util" {
                            4. `gcloud --project PROJECT_ID  compute instances start INSTANCE_NAME`
                            EOT
   notification_channels  = [module.rackspace_urgent.notification_id]
-  watchman_token         = var.watchman_token
   threshold              = 99
 }
 
 module "gce_disk_usage" {
   source                 = "./modules/base-policy"
-  project_id             = var.project_id
   combiner               = "AND_WITH_MATCHING_RESOURCE"
   policy_display_name    = "rax-amr-gce_disk_usage"
   condition_display_name = "DISK USAGE for GCE INSTANCEs"
@@ -78,13 +75,11 @@ module "gce_disk_usage" {
                            1. See [Wiki](https://one.rackspace.com/display/MGCP/MGCP+-+Base+Policy+-+Disk+Usage+-+OS+resize)
                            EOT
   notification_channels  = [module.rackspace_urgent.notification_id]
-  watchman_token         = var.watchman_token
   threshold              = 90
 }
 
 module "gce_uptime_check" {
   source                 = "./modules/base-policy"
-  project_id             = var.project_id
   combiner               = "OR"
   policy_display_name    = "rax-amr-gce_uptime_check"
   condition_display_name = "UPTIME CHECK for GCE INSTANCEs"
@@ -105,7 +100,6 @@ module "gce_uptime_check" {
                            3. If unable to diagnosis issue or resolve errors, call customer escalation list \n
                            EOT
   notification_channels  = [module.rackspace_urgent.notification_id]
-  watchman_token         = var.watchman_token
   threshold              = 0
 }
 
@@ -113,7 +107,6 @@ module "gce_uptime_check" {
 
 module "csql_cpu_util" {
   source                 = "./modules/base-policy"
-  project_id             = var.project_id
   combiner               = "AND"
   policy_display_name    = "rax-amr-monitoring-csql_cpu_util"
   condition_display_name = "CPU UTILIZATION for CSQL INSTANCES"
@@ -132,13 +125,11 @@ module "csql_cpu_util" {
                            4. `gcloud --project PROJECT_ID sql instances start INSTANCE_NAME`
                            EOT
   notification_channels  = [module.rackspace_urgent.notification_id]
-  watchman_token         = var.watchman_token
   threshold              = 0.99
 }
 
 module "csql_mem_util" {
   source                 = "./modules/base-policy"
-  project_id             = var.project_id
   combiner               = "OR"
   policy_display_name    = "rax-amr-monitoring-csql_memory_util"
   condition_display_name = "MEM UTILIZATION for CSQL INSTANCES"
@@ -157,13 +148,11 @@ module "csql_mem_util" {
                            4. `gcloud --project PROJECT_ID sql instances start INSTANCE_NAME`
                            EOT
   notification_channels  = [module.rackspace_urgent.notification_id]
-  watchman_token         = var.watchman_token
   threshold              = 0.99
 }
 
 # module "mysql_replica_lag" {
 #   source                 = "./modules/base-policy"
-#   project_id             = var.project_id
 #   combiner               = "AND"
 #   policy_display_name    = "rax-amr-monitoring-mysql_replica_lag"
 #   condition_display_name = "REPLICA LAG for MySQL INSTANCES (CSQL)"
@@ -185,7 +174,6 @@ module "csql_mem_util" {
 #                               3. `gcloud --project PROJECT_ID sql instances start INSTANCE_NAME`
 #                            EOT
 #   notification_channels  = [module.mysql_replica_lag.rackspace_urgent_id]
-#   watchman_token         = var.watchman_token
 #   threshold              = 0
 # }
 
@@ -193,7 +181,6 @@ module "csql_mem_util" {
 
 # module "k8s_node_cpu_util" {
 #   source                 = "./modules/base-policy"
-#   project_id             = var.project_id
 #   combiner               = "AND"
 #   policy_display_name    = "rax-amr-monitoring-k8s_node_cpu_util"
 #   condition_display_name = "CPU UTILIZATOIN for K8S NODES "
@@ -215,7 +202,6 @@ module "csql_mem_util" {
 #                               3. `gcloud --project PROJECT_ID sql instances start INSTANCE_NAME`
 #                            EOT
 #   notification_channels  = [module.k8s_node_cpu_util.rackspace_urgent_id]
-#   watchman_token         = var.watchman_token
 #   threshold              = 0.99
 # }
 
@@ -223,7 +209,6 @@ module "csql_mem_util" {
 
 # module "ngw_allocation_failure" {
 #   source                 = "./modules/base-policy"
-#   project_id             = var.project_id
 #   combiner               = "OR"
 #   policy_display_name    = "rax-amr-nat_allocation_failed_emergency"
 #   condition_display_name = "NAT Gateway Allocation Failure"
@@ -237,13 +222,11 @@ module "csql_mem_util" {
 #                             1. See the [compute_router_nat](https://www.terraform.io/docs/providers/google/r/compute_router_nat.html) Terraform resource documentation for more information.
 #                            EOT
 #   notification_channels  = [module.ngw_allocation_failure.rackspace_urgent_id]
-#   watchman_token         = var.watchman_token
 #   threshold              = 1
 # }
 
 # module "ngw_port_exhaustion" {
 #   source                 = "./modules/base-policy"
-#   project_id             = var.project_id
 #   combiner               = "OR"
 #   policy_display_name    = "rax-amr-nat_gw_port_exhaustion"
 #   condition_display_name = "NAT Gateway Port Exhaustion"
@@ -258,6 +241,5 @@ module "csql_mem_util" {
 #                            2. Note: Alarm set @ 90% of 64512 which is the maximum number of ports that can be allocated to a single NAT address.
 #                            EOT
 #   notification_channels  = [module.ngw_port_exhaustion.rackspace_urgent_id]
-#   watchman_token         = var.watchman_token
 #   threshold              = 58060
 # }
