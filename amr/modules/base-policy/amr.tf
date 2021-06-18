@@ -15,9 +15,9 @@ resource "google_monitoring_alert_policy" "alert_policy_module" {
         alignment_period     = "60s"
         per_series_aligner   = "ALIGN_MEAN"
         cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["resource.label.project_id", "metric.label.instance_name", "resource.label.zone", "resource.label.instance_id"]
+        group_by_fields      = ["resource.label.project_id", "metric.label.instance_name", "resource.label.zone", "resource.label.${var.resource_label}"]
       }
-      threshold = var.threshold
+      threshold_value = var.threshold
       trigger {
         count = 1
       }
