@@ -48,3 +48,8 @@ variable "threshold_value" {
   type = number
   default = 0.9
 }
+
+variable "resource_label" {
+  type = string
+  default = "instance_id"
+}
