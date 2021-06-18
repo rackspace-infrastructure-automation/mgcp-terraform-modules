@@ -17,7 +17,7 @@ resource "google_monitoring_alert_policy" "alert_policy_module" {
         cross_series_reducer = "REDUCE_MEAN"
         group_by_fields      = ["resource.label.project_id", "metric.label.instance_name", "resource.label.zone", "resource.label.instance_id"]
       }
-      threshold_value = var.threshold_value
+      threshold = var.threshold
       trigger {
         count = 1
       }

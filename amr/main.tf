@@ -217,6 +217,7 @@ module "k8s_node_cpu_util" {
                            EOT
   notification_channels  = [module.k8s_node_cpu_util.rackspace_urgent_id]
   watchman_token         = var.watchman_token
+  threshold              = 0.99
 }
 
 ### NGW Monitors
