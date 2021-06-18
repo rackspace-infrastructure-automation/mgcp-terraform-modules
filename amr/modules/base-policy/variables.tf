@@ -1,11 +1,3 @@
-variable "project_id" {
-  type = string
-}
-
-variable "watchman_token" {
-  type = string
-}
-
 variable "policy_display_name" {
   type = string
 }
