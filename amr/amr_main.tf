@@ -32,10 +32,10 @@ module "gce_cpu_util" {
   threshold              = 0.99
 }
 
-module "gce_#_util" {
+module "gce_mem_util" {
   source                 = "./modules/base-policy"
   combiner               = "OR"
-  policy_display_name    = "rax-amr-gce_#_util"
+  policy_display_name    = "rax-amr-gce_mem_util"
   condition_display_name = "# UTIL for GCE INSTANCEs"
   condition_filter       = <<EOT
                            metric.label.state="used" AND
