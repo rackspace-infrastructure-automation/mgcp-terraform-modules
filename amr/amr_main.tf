@@ -13,9 +13,9 @@ module "gce_cpu_util" {
   source                 = "./modules/base-policy"
   combiner               = "OR"
   policy_display_name    = "rax-amr-gce_cpu_util"
-  condition_display_name = "CPU check for GCE INSTANCEs"
+  condition_display_name = "CPU UTILIZATION for GCE INSTANCEs"
   condition_filter       = <<EOT
-                           metric.type="compute.googleapis.com/instance/uptime" AND
+                           metric.type="agent.googleapis.com/cpu/utilization" AND
                            metadata.user_labels.autoscaled="false" AND
                            metadata.user_labels.monitored="true" AND
                            resource.type="gce_instance"
@@ -36,10 +36,10 @@ module "gce_mem_util" {
   source                 = "./modules/base-policy"
   combiner               = "OR"
   policy_display_name    = "rax-amr-gce_mem_util"
-  condition_display_name = "# UTIL for GCE INSTANCEs"
+  condition_display_name = "MEMORY PERCENTAGE for GCE INSTANCEs"
   condition_filter       = <<EOT
                            metric.label.state="used" AND
-                           metric.type="agent.googleapis.com/#ory/percent_used" AND
+                           metric.type="agent.googleapis.com/memory/percent_used" AND
                            metadata.user_labels.autoscaled="false" AND
                            metadata.user_labels.monitored="true" AND
                            resource.type="gce_instance"
@@ -135,7 +135,7 @@ module "csql_mem_util" {
   policy_display_name    = "rax-amr-monitoring-csql_#ory_util"
   condition_display_name = "# UTILIZATION for CSQL INSTANCES"
   condition_filter       = <<EOT
-                           metric.type="cloudsql.googleapis.com/database/#ory/utilization" AND
+                           metric.type="cloudsql.googleapis.com/database/memory/utilization" AND
                            metadata.user_labels.monitored="true" AND
                            resource.type="cloudsql_database"
                            EOT
@@ -200,7 +200,7 @@ module "csql_replica_lag" {
                               3. `gcloud --project PROJECT_ID sql instances start INSTANCE_NAME`
                            EOT
   group_by_fields        = ["resource.label.project_id", "resource.label.database_id", "resource.label.region"]
-  notification_channels  = [module.mysql_replica_lag.rackspace_urgent_id]
+  notification_channels  = [module.rackspace_urgent.rackspace_urgent_id]
   threshold              = 1
 }
 
