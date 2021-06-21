@@ -21,6 +21,7 @@ variable "comparison" {
 
 variable "condition_duration" {
   type = string
+  default = "60s"
 }
 
 variable "runbook_content" {
