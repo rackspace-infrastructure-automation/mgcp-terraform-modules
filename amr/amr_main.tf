@@ -132,8 +132,8 @@ module "csql_cpu_util" {
 module "csql_mem_util" {
   source                 = "./modules/base-policy"
   combiner               = "OR"
-  policy_display_name    = "rax-amr-monitoring-csql_#ory_util"
-  condition_display_name = "# UTILIZATION for CSQL INSTANCES"
+  policy_display_name    = "rax-amr-monitoring-csql_memory_util"
+  condition_display_name = "MEM UTILIZATION for CSQL INSTANCES"
   condition_filter       = <<EOT
                            metric.type="cloudsql.googleapis.com/database/memory/utilization" AND
                            metadata.user_labels.monitored="true" AND
@@ -210,7 +210,7 @@ module "k8s_node_cpu_util" {
   source                 = "./modules/base-policy"
   combiner               = "AND"
   policy_display_name    = "rax-amr-monitoring-k8s_node_cpu_util"
-  condition_display_name = "CPU UTILIZATOIN for K8S NODES "
+  condition_display_name = "CPU UTILIZATION for K8S NODES"
   condition_filter       = <<EOT
                            metric.type=\"kubernetes.io/node/cpu/allocatable_utilization" AND
                            metadata.user_labels.monitored="true" AND
@@ -229,7 +229,7 @@ module "k8s_node_mem_util" {
   source                 = "./modules/base-policy"
   combiner               = "AND"
   policy_display_name    = "rax-amr-monitoring-k8s_node_mem_util"
-  condition_display_name = "CPU UTILIZATOIN for K8S NODES "
+  condition_display_name = "MEMORY UTILIZATOIN for K8S NODES"
   condition_filter       = <<EOT
                            metric.type=\"kubernetes.io/node/memory/allocatable_utilization" AND
                            metadata.user_labels.monitored="true" AND
