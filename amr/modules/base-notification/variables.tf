@@ -11,5 +11,5 @@ variable "type" {
 }
 
 variable "labels" {
-  type = "map"
+  type = map
 }
