@@ -69,7 +69,6 @@ module "gce_disk_usage" {
                            resource.type="gce_instance" AND
                            metric.label.device!=monitoring.regex.full_match(".*(loop[0-9]|tmpfs|udev).*")
                            EOT
-  condition_duration     = "60s"
   runbook_content        = <<EOT
                            1. See [Wiki](https://one.rackspace.com/display/MGCP/MGCP+-+Base+Policy+-+Disk+Usage+-+OS+resize)
                            EOT
@@ -89,7 +88,6 @@ module "gce_uptime_check" {
                            metadata.user_labels.monitored="true" AND
                            resource.type="gce_instance"
                            EOT
-  condition_duration     = "60s"
   comparison             = "COMPARISON_LT"
   runbook_content        = <<EOT
                            1. Ensure instance is responding.\n
@@ -163,7 +161,6 @@ module "csql_disk_util" {
                            metadata.user_labels.monitored="true" AND
                            resource.type="cloudsql_database"
                            EOT
-  condition_duration     = "60s"
   runbook_content        = <<EOT
                            1. Resize instance up one machine type with customer approval, use IAC unless this is an emergency
                               - NOTE: Restarts can take up to 60 minutes if slow queries or persistent connections are used
@@ -262,6 +259,7 @@ module "ngw_allocation_failure" {
                            EOT
   group_by_fields        = ["resource.label.project_id", "resource.label.region", "resource.label.router_id", "resource.label.gateway_name"]
   notification_channels  = [module.rackspace_urgent.notification_id]
+  per_series_aligner     = "ALIGN_COUNT_TRUE"
   threshold              = 1
 }
 
@@ -274,7 +272,6 @@ module "ngw_port_exhaustion" {
                            metric.type="router.googleapis.com/nat/allocated_ports" 
                            resource.type="nat_gateway"
                            EOT
-  condition_duration     = "60s"
   runbook_content        = <<EOT
                            1. Assign additional static address. Alternatively, investigate if minPortsPerVM can be reduced.
                              1. See the [compute_router_nat](https://www.terraform.io/docs/providers/google/r/compute_router_nat.html) Terraform resource documentation for more information.
