@@ -511,7 +511,7 @@ resource "google_monitoring_alert_policy" "csql_mysql_seconds_behind_master" {
     display_name = "Metric Threshold on All MySQL Cloud SQL (CSQL)"
     condition_threshold {
       filter     = <<EOT
-              metric.type="database/mysql/replication/seconds_behind_master" AND
+              metric.type="cloudsql.googleapis.com/database/mysql/replication/seconds_behind_master" AND
               metadata.user_labels.monitored="true" AND
               resource.type="cloudsql_database"
       EOT

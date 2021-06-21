@@ -183,7 +183,7 @@ module "csql_replica_lag" {
   policy_display_name    = "rax-amr-monitoring-csql_replica_lag"
   condition_display_name = "REPLICA LAG for CSQL INSTANCES"
   condition_filter       = <<EOT
-                           metric.type="database/mysql/replication/seconds_behind_master" AND
+                           metric.type="cloudsql.googleapis.com/database/mysql/replication/seconds_behind_master" AND
                            metadata.user_labels.monitored="true" AND
                            resource.type="cloudsql_database"
                            EOT
@@ -212,7 +212,7 @@ module "k8s_node_cpu_util" {
   policy_display_name    = "rax-amr-monitoring-k8s_node_cpu_util"
   condition_display_name = "CPU UTILIZATION for K8S NODES"
   condition_filter       = <<EOT
-                           metric.type=\"kubernetes.io/node/cpu/allocatable_utilization" AND
+                           metric.type="kubernetes.io/node/cpu/allocatable_utilization" AND
                            metadata.user_labels.monitored="true" AND
                            resource.type="k8s_node"
                            EOT
@@ -231,7 +231,7 @@ module "k8s_node_mem_util" {
   policy_display_name    = "rax-amr-monitoring-k8s_node_mem_util"
   condition_display_name = "MEMORY UTILIZATOIN for K8S NODES"
   condition_filter       = <<EOT
-                           metric.type=\"kubernetes.io/node/memory/allocatable_utilization" AND
+                           metric.type="kubernetes.io/node/memory/allocatable_utilization" AND
                            metadata.user_labels.monitored="true" AND
                            resource.type="k8s_node"
                            EOT
