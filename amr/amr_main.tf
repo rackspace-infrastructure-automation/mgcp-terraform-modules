@@ -200,7 +200,7 @@ module "csql_replica_lag" {
                               3. `gcloud --project PROJECT_ID sql instances start INSTANCE_NAME`
                            EOT
   group_by_fields        = ["resource.label.project_id", "resource.label.database_id", "resource.label.region"]
-  notification_channels  = [module.rackspace_urgent.rackspace_urgent_id]
+  notification_channels  = [module.rackspace_urgent.notification_id]
   threshold              = 1
 }
 
@@ -221,7 +221,7 @@ module "k8s_node_cpu_util" {
                            1. Double the max size of the nodepool.	
                            EOT
   group_by_fields        = ["resource.label.cluster_name", "resource.label.node_name", "resource.label.project_id", "resource.label.location"]
-  notification_channels  = [module.k8s_node_cpu_util.rackspace_urgent_id]
+  notification_channels  = [module.rackspace_urgent.notification_id]
   threshold              = 0.99
 }
 
@@ -240,7 +240,7 @@ module "k8s_node_mem_util" {
                            1. Double the max size of the nodepool.	
                            EOT
   group_by_fields        = ["resource.label.cluster_name", "resource.label.node_name", "resource.label.project_id", "resource.label.location"]
-  notification_channels  = [module.k8s_node_cpu_util.rackspace_urgent_id]
+  notification_channels  = [module.rackspace_urgent.notification_id]
   threshold              = 0.90
 }
 
@@ -261,7 +261,7 @@ module "ngw_allocation_failure" {
                             1. See the [compute_router_nat](https://www.terraform.io/docs/providers/google/r/compute_router_nat.html) Terraform resource documentation for more information.
                            EOT
   group_by_fields        = ["resource.label.project_id", "resource.label.region", "resource.label.router_id", "resource.label.gateway_name"]
-  notification_channels  = [module.ngw_allocation_failure.rackspace_urgent_id]
+  notification_channels  = [module.rackspace_urgent.notification_id]
   threshold              = 1
 }
 
@@ -281,6 +281,6 @@ module "ngw_port_exhaustion" {
                            2. Note: Alarm set @ 90% of 64512 which is the maximum number of ports that can be allocated to a single NAT address.
                            EOT
   group_by_fields        = ["resource.label.project_id", "resource.label.region", "resource.label.router_id", "resource.label.gateway_name"]
-  notification_channels  = [module.ngw_port_exhaustion.rackspace_urgent_id]
+  notification_channels  = [module.rackspace_urgent.notification_id]
   threshold              = 58060
 }
