@@ -15,6 +15,26 @@ variable "bgp_asn" {
   description = "ASN of the Cloud Router"
 }
 
+variable "bgp_advertise_mode" {
+  type        = string
+  description = "Advertise mode of the Cloud Router"
+}
+
+variable "bgp_range_desc" {
+  type        = string
+  description = "Advertise IP Ranges description of the Cloud Router for BGP sessions"
+}
+
+variable "bgp_range" {
+  type        = string
+  description = "Advertise IP Ranges on the Cloud Router for BGP sessions"
+}
+
+variable "bgp_advertised_groups" {
+  type        = list
+  description = "Advertise subnets on the Cloud Router for BGP sessions"
+}
+
 variable "peer_asn" {
   type        = number
   description = "ASN of the peer VPN's router"

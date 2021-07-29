@@ -10,7 +10,15 @@ resource "google_compute_router" "vpn-rtr" {
   region  = var.region
   network = var.network
   bgp {
-    asn = var.bgp_asn
+    asn                       = var.bgp_asn
+    advertise_mode            = var.bgp_advertise_mode
+    advertised_groups         = var.bgp_advertised_groups
+
+    advertised_ip_ranges {
+      description = var.bgp_range_desc
+      range       = var.bgp_range
+    }
+
   }
 }
 
