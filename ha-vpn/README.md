@@ -20,7 +20,7 @@ module "ha-vpn" {
   bgp_asn                   = 65001
   bgp_cr_session_range      = ["169.254.0.5/30", "169.254.1.5/30"]
   bgp_advertise_mode        = "CUSTOM"                             // Optional
-  bgp_advertised_group      = ["ALL_SUBNETS"]                      // Optional
+  bgp_advertised_groups     = ["ALL_SUBNETS"]                      // Optional
   bgp_range_desc            = "private.googleapis.com"             // Optional
   bgp_range                 = "199.36.153.8/30"                    // Optional
 }
