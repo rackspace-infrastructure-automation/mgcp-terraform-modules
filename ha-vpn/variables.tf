@@ -18,21 +18,25 @@ variable "bgp_asn" {
 variable "bgp_advertise_mode" {
   type        = string
   description = "Advertise mode of the Cloud Router"
+  default     = "DEFAULT"
 }
 
 variable "bgp_range_desc" {
   type        = string
   description = "Advertise IP Ranges description of the Cloud Router for BGP sessions"
+  default     = null
 }
 
 variable "bgp_range" {
   type        = string
   description = "Advertise IP Ranges on the Cloud Router for BGP sessions"
+  default     = null
 }
 
 variable "bgp_advertised_groups" {
   type        = list
   description = "Advertise subnets on the Cloud Router for BGP sessions"
+  default     = null
 }
 
 variable "peer_asn" {
