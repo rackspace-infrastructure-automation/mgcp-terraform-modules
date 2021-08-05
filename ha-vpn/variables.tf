@@ -31,6 +31,7 @@ variable "bgp_range" {
   type        = string
   description = "Advertise IP Ranges on the Cloud Router for BGP sessions"
   default     = null
+  required    = false
 }
 
 variable "bgp_advertised_groups" {
