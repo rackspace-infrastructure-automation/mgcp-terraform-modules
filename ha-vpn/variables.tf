@@ -18,7 +18,7 @@ variable "bgp_asn" {
 variable "bgp_advertise_mode" {
   type        = string
   description = "Advertise mode of the Cloud Router"
-  default     = "DEFAULT"
+  default     = null
 }
 
 variable "bgp_range_desc" {
@@ -34,7 +34,7 @@ variable "bgp_range" {
 }
 
 variable "bgp_advertised_groups" {
-  type        = list
+  type        = list(any)
   description = "Advertise subnets on the Cloud Router for BGP sessions"
   default     = null
 }
@@ -45,7 +45,7 @@ variable "peer_asn" {
 }
 
 variable "peer_ips" {
-  type        = list
+  type        = list(any)
   description = "Peer Tunnel IPs"
 }
 
@@ -62,12 +62,12 @@ variable "advertised_route_priority" {
 }
 
 variable "bgp_cr_session_range" {
-  type        = list
+  type        = list(any)
   description = "Source IP and range of cloud router BGP session. A valid /30 subnet like 169.254.0.5/30"
 }
 
 variable "peer_remote_session_range" {
-  type        = list
+  type        = list(any)
   description = "Remote peer IP of cloud router BGP session. A valid ip in a /30 block like 169.254.0.6"
 }
 
@@ -81,6 +81,6 @@ variable "resource_prefix" {
 }
 
 variable "shared_secrets" {
-  type        = list
+  type        = list(any)
   description = "IKEv2 Secret of the Tunnels"
 }
