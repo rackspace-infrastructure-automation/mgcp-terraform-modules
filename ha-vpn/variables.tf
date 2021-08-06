@@ -18,7 +18,7 @@ variable "bgp_asn" {
 variable "bgp_advertise_mode" {
   type        = string
   description = "Advertise mode of the Cloud Router"
-  default     = "DEFAULT"
+  default     = null
 }
 
 variable "bgp_range_desc" {

@@ -14,11 +14,13 @@ resource "google_compute_router" "vpn-rtr" {
     advertise_mode            = var.bgp_advertise_mode
     advertised_groups         = var.bgp_advertised_groups
 
-    advertised_ip_ranges {
-      description = var.bgp_range_desc
-      range       = var.bgp_range
+    dynamic "advertised_ip_ranges" {
+      for_each = var.bgp_advertise_mode[*]
+      content {
+        description = var.bgp_range_desc
+        range       = var.bgp_range
+      }
     }
-
   }
 }
 
