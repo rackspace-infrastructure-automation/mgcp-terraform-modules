@@ -11,9 +11,9 @@ variable "region" {
 
 
 variable "bgp_asn" {
-  type        = any
+  type        = number
   description = "ASN of the Cloud Router"
-  default     = 64515
+  default     = ""
 }
 
 variable "bgp_advertise_mode" {
