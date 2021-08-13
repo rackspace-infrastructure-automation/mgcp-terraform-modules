@@ -11,7 +11,6 @@ variable "region" {
 
 
 variable "bgp_asn" {
-  type        = number
   description = "ASN of the Cloud Router"
   default     = 64515
 }
