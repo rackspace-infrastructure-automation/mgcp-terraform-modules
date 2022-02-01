@@ -27,3 +27,8 @@ variable "rule_prefix" {
   type = string
   default = ""
 }
+
+variable "disabled" {
+  type = bool
+  default = false
+}
