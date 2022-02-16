@@ -1,3 +1,7 @@
+provider "google" {
+  project = var.project_id
+}
+
 resource "google_monitoring_notification_channel" "rackspace_low" {
   display_name = "rackspace-low"
   description  = "Rackspace low severity notification channel"
