@@ -320,10 +320,10 @@ resource "google_logging_metric" "nat_gw_dropped_conn" {
 }
 
 resource "google_monitoring_alert_policy" "ssh_rdp_open_fw" {
-  count        = lookup(var.nat_alert, "enabled", false) == true ? 1 : 0
+  count        = lookup(var.ssh_rdp_fw_alert, "enabled", false) == true ? 1 : 0
   display_name = "rax-mgcp-monitoring-insecure_ssh_rdp_fw_created-emergency"
   combiner     = "OR"
-  enabled      = lookup(var.nat_alert, "enabled", false)
+  enabled      = lookup(var.ssh_rdp_fw_alert, "enabled", false)
   conditions {
     display_name = "Insecure SSH/RDP Rule Opened"
     condition_threshold {
@@ -360,7 +360,7 @@ resource "google_monitoring_alert_policy" "ssh_rdp_open_fw" {
 ### NAT GW Logging metric
 
 resource "google_logging_metric" "insecure_ssh_rdp_fw_created" {
-  count  = lookup(var.nat_alert, "enabled", false) == true ? 1 : 0
+  count  = lookup(var.ssh_rdp_fw_alert, "enabled", false) == true ? 1 : 0
   name   = "insecure_ssh_rdp_fw_created"
   filter = "(protoPayload.methodName=("v1.compute.firewalls.insert" OR "v1.compute.firewalls.patch" OR "beta.compute.firewalls.insert" OR "beta.compute.firewalls.patch") protoPayload.request.sourceRanges="0.0.0.0/0" protoPayload.request.alloweds.ports=("22" OR "3389")) OR (protoPayload.methodName=("v1.compute.firewalls.patch" OR "beta.compute.firewalls.patch") protoPayload.resourceOriginalState.sourceRanges="0.0.0.0/0" protoPayload.request.alloweds.ports=("22" OR "3389")) OR (protoPayload.methodName=("v1.compute.firewalls.patch" OR "beta.compute.firewalls.patch") protoPayload.request.sourceRanges="0.0.0.0/0" protoPayload.resourceOriginalState.alloweds.ports=("22" OR "3389"))"
   metric_descriptor {

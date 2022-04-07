@@ -96,3 +96,11 @@ variable "nat_alert" {
     enabled = false
   }
 }
+
+variable "ssh_rdp_fw_alert" {
+  description = "Memory Usage Parameters"
+  type        = map
+  default = {
+    enabled = false
+  }
+}
