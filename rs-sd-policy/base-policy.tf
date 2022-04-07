@@ -318,3 +318,54 @@ resource "google_logging_metric" "nat_gw_dropped_conn" {
     unit        = "1"
   }
 }
+
+resource "google_monitoring_alert_policy" "ssh_rdp_open_fw" {
+  count        = lookup(var.nat_alert, "enabled", false) == true ? 1 : 0
+  display_name = "rax-mgcp-monitoring-insecure_ssh_rdp_fw_created-emergency"
+  combiner     = "OR"
+  enabled      = lookup(var.nat_alert, "enabled", false)
+  conditions {
+    display_name = "Insecure SSH/RDP Rule Opened"
+    condition_threshold {
+      filter     = <<EOT
+          metric.type="logging.googleapis.com/user/insecure_ssh_rdp_fw_created"
+      EOT
+      duration   = "0s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "60s"
+        per_series_aligner   = "ALIGN_SUM"
+        cross_series_reducer = "REDUCE_SUM"
+        group_by_fields      = ["resource.label.project_id"]
+
+      }
+      trigger {
+        count = 1
+      }
+    }
+  }
+  documentation {
+    mime_type = "text/markdown"
+    content   = <<EOT
+             1. An insecure firewall has been opened on ports 22 and/or 3389 with a source range of 0.0.0.0/0.
+                1. Disable the rule immediately
+                1. Check who has created the rule. If it was a Racker reach out to them via Teams and let them know they've created an insecure rule and they need to lock it down. If it was the customer call them immediately and let them know.
+                1. Work with the customer to lock down the rule to specific source ranges if applicable.
+          EOT
+  }
+  notification_channels = [google_monitoring_notification_channel.rackspace_emergency.name]
+  depends_on            = [google_logging_metric.insecure_ssh_rdp_fw_created]
+}
+
+### NAT GW Logging metric
+
+resource "google_logging_metric" "insecure_ssh_rdp_fw_created" {
+  count  = lookup(var.nat_alert, "enabled", false) == true ? 1 : 0
+  name   = "insecure_ssh_rdp_fw_created"
+  filter = "(protoPayload.methodName=("v1.compute.firewalls.insert" OR "v1.compute.firewalls.patch" OR "beta.compute.firewalls.insert" OR "beta.compute.firewalls.patch") protoPayload.request.sourceRanges="0.0.0.0/0" protoPayload.request.alloweds.ports=("22" OR "3389")) OR (protoPayload.methodName=("v1.compute.firewalls.patch" OR "beta.compute.firewalls.patch") protoPayload.resourceOriginalState.sourceRanges="0.0.0.0/0" protoPayload.request.alloweds.ports=("22" OR "3389")) OR (protoPayload.methodName=("v1.compute.firewalls.patch" OR "beta.compute.firewalls.patch") protoPayload.request.sourceRanges="0.0.0.0/0" protoPayload.resourceOriginalState.alloweds.ports=("22" OR "3389"))"
+  metric_descriptor {
+    metric_kind = "DELTA"
+    value_type  = "INT64"
+    unit        = "1"
+  }
+}
