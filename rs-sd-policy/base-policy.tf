@@ -327,7 +327,9 @@ resource "google_monitoring_alert_policy" "ssh_rdp_open_fw" {
   conditions {
     display_name = "Insecure SSH/RDP Rule Opened"
     condition_threshold {
-      filter     = "metric.type='logging.googleapis.com/user/ports_22_3389_open_to_internet'"
+      filter     = <<EOT
+          metric.type="logging.googleapis.com/user/ports_22_3389_open_to_internet" resource.type="compute.googleapis.com/VpcNetwork"
+      EOT
       duration   = "0s"
       comparison = "COMPARISON_GT"
       aggregations {
@@ -360,7 +362,9 @@ resource "google_monitoring_alert_policy" "ssh_rdp_open_fw" {
 resource "google_logging_metric" "insecure_ssh_rdp_fw_created" {
   count  = lookup(var.ssh_rdp_fw_alert, "enabled", false) == true ? 1 : 0
   name   = "insecure_ssh_rdp_fw_created"
-  filter = "(protoPayload.methodName=('v1.compute.firewalls.insert' OR 'v1.compute.firewalls.patch' OR 'beta.compute.firewalls.insert' OR 'beta.compute.firewalls.patch') protoPayload.request.sourceRanges='0.0.0.0/0' protoPayload.request.alloweds.ports=('22' OR '3389')) OR (protoPayload.methodName=('v1.compute.firewalls.patch' OR 'beta.compute.firewalls.patch') protoPayload.resourceOriginalState.sourceRanges='0.0.0.0/0' protoPayload.request.alloweds.ports=('22' OR '3389')) OR (protoPayload.methodName=('v1.compute.firewalls.patch' OR 'beta.compute.firewalls.patch') protoPayload.request.sourceRanges='0.0.0.0/0' protoPayload.resourceOriginalState.alloweds.ports=('22' OR '3389'))"
+  filter = <<EOT
+      (protoPayload.methodName=("v1.compute.firewalls.insert" OR "v1.compute.firewalls.patch" OR "beta.compute.firewalls.insert" OR "beta.compute.firewalls.patch") protoPayload.request.sourceRanges="0.0.0.0/0" protoPayload.request.alloweds.ports=("22" OR "3389")) OR (protoPayload.methodName=("v1.compute.firewalls.patch" OR "beta.compute.firewalls.patch") protoPayload.resourceOriginalState.sourceRanges="0.0.0.0/0" protoPayload.request.alloweds.ports=("22" OR "3389")) OR (protoPayload.methodName=("v1.compute.firewalls.patch" OR "beta.compute.firewalls.patch") protoPayload.request.sourceRanges="0.0.0.0/0" protoPayload.resourceOriginalState.alloweds.ports=("22" OR "3389"))
+  EOT
   metric_descriptor {
     metric_kind = "DELTA"
     value_type  = "INT64"
