@@ -47,3 +47,23 @@ resource "google_monitoring_notification_channel" "rackspace_emergency" {
   }
   enabled = var.enabled
 }
+
+resource "google_monitoring_notification_channel" "toolstation_alerting_group" {
+  display_name = "toolstation-alerting-group"
+  description  = "Toolstation Alerting Group"
+  type         = "email"
+  labels = {
+    email_address = "toolstation-production-alerting-group@toolstation.com"
+  }
+  enabled = var.enabled
+}
+
+resource "google_monitoring_notification_channel" "rackspace_tickets" {
+  display_name = "rackspace-tickets"
+  description  = "Rackspce Tickets"
+  type         = "email"
+  labels = {
+    email_address = "rackspacetickets@toolstation.com"
+  }
+  enabled = var.enabled
+}
