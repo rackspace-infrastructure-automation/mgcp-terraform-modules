@@ -327,16 +327,14 @@ resource "google_monitoring_alert_policy" "ssh_rdp_open_fw" {
   conditions {
     display_name = "Insecure SSH/RDP Rule Opened"
     condition_threshold {
-      filter     = <<EOT
-          metric.type="logging.googleapis.com/user/insecure_ssh_rdp_fw_created"
-      EOT
+      filter     = "metric.type='logging.googleapis.com/user/ports_22_3389_open_to_internet'"
       duration   = "0s"
       comparison = "COMPARISON_GT"
       aggregations {
         alignment_period     = "60s"
         per_series_aligner   = "ALIGN_SUM"
         cross_series_reducer = "REDUCE_SUM"
-        group_by_fields      = ["resource.label.project_id"]
+        group_by_fields      = ["metric.label.project"]
 
       }
       trigger {
