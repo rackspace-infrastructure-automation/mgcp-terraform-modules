@@ -15,16 +15,20 @@ module "rs_sd_policy" {
     disk_percentage = 90
   }
 
-  memory_usage {
+  memory_usage = {
     enabled = true
     mem_threshold = 100
   }
 
-  nat_alert {
+  uptime_check = {
+    enabled = true
+  }
+
+  nat_alert = {
     enabled = false
   }
 
-  ssh_rdp_fw_alert {
+  ssh_rdp_fw_alert = {
     enabled = false
   }
 }
