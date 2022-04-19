@@ -328,7 +328,7 @@ resource "google_monitoring_alert_policy" "ssh_rdp_open_fw" {
     display_name = "Insecure SSH/RDP Rule Opened"
     condition_threshold {
       filter     = <<EOT
-          metric.type="logging.googleapis.com/user/ports_22_3389_open_to_internet" resource.type="global"
+          metric.type="logging.googleapis.com/user/insecure_ssh_rdp_fw_created" resource.type="global"
       EOT
       duration   = "0s"
       comparison = "COMPARISON_GT"
