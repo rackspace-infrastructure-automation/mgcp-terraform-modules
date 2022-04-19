@@ -362,7 +362,7 @@ resource "google_monitoring_alert_policy" "ssh_rdp_open_fw" {
 resource "google_logging_metric" "insecure_ssh_rdp_fw_created" {
   count  = lookup(var.ssh_rdp_fw_alert, "enabled", false) == true ? 1 : 0
   name   = "insecure_ssh_rdp_fw_created"
-  filter = "(protoPayload.methodName=("v1.compute.firewalls.insert" OR "v1.compute.firewalls.patch" OR "beta.compute.firewalls.insert" OR "beta.compute.firewalls.patch") protoPayload.request.sourceRanges="0.0.0.0/0" protoPayload.request.alloweds.ports=("22" OR "3389")) OR (protoPayload.methodName=("v1.compute.firewalls.patch" OR "beta.compute.firewalls.patch") protoPayload.resourceOriginalState.sourceRanges="0.0.0.0/0" protoPayload.request.alloweds.ports=("22" OR "3389")) OR (protoPayload.methodName=("v1.compute.firewalls.patch" OR "beta.compute.firewalls.patch") protoPayload.request.sourceRanges="0.0.0.0/0" protoPayload.resourceOriginalState.alloweds.ports=("22" OR "3389"))"
+  filter = "(protoPayload.methodName=('v1.compute.firewalls.insert' OR 'v1.compute.firewalls.patch' OR 'beta.compute.firewalls.insert' OR 'beta.compute.firewalls.patch') protoPayload.request.sourceRanges='0.0.0.0/0' protoPayload.request.alloweds.ports=('22' OR '3389')) OR (protoPayload.methodName=('v1.compute.firewalls.patch' OR 'beta.compute.firewalls.patch') protoPayload.resourceOriginalState.sourceRanges='0.0.0.0/0' protoPayload.request.alloweds.ports=('22' OR '3389')) OR (protoPayload.methodName=('v1.compute.firewalls.patch' OR 'beta.compute.firewalls.patch') protoPayload.request.sourceRanges='0.0.0.0/0' protoPayload.resourceOriginalState.alloweds.ports=('22' OR '3389'))"
   metric_descriptor {
     metric_kind = "DELTA"
     value_type  = "INT64"
