@@ -24,7 +24,7 @@ module "rs_sd_policy" {
     enabled = true
   }
 
-### Shared VPC Alerts ###
+### Shared VPC Alert Policies ###
 
   nat_alert = {
     enabled = false
