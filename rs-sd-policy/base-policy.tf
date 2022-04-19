@@ -347,6 +347,7 @@ resource "google_monitoring_alert_policy" "ssh_rdp_open_fw" {
   documentation {
     mime_type = "text/markdown"
     content   = <<EOT
+            !!! DO NOT RESOLVE THIS ALERT WITHOUT VERIFYING IN THE CONSOLE FIRST IF THE ALERT TICKET SAYS ALARM CLEARED !!!
              1. An insecure firewall has been opened on ports 22 and/or 3389 with a source range of 0.0.0.0/0.
                 1. Disable the rule immediately
                 1. Check who has created the rule. If it was a Racker reach out to them via Teams and let them know they've created an insecure rule and they need to lock it down. If it was the customer call them immediately and let them know.
