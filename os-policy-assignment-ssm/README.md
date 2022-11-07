@@ -1,5 +1,5 @@
 # Description:
-This repo deploys an OS Policy assignment for each zone within the selected region
+This repo deploys an OS Policy assignment for each zone within the selected region.
 The Policy assignment will deploy SSM for the following OS:
 - Windows
 - Debian
