@@ -1,0 +1,17 @@
+id: ssm-win-policy
+mode: ENFORCEMENT
+resourceGroups:
+  - resources:
+    - id: install-ssm
+      exec:
+        validate:
+          interpreter: POWERSHELL
+          script: |
+            $service = Get-Service -Name 'AmazonSSMAgent'
+            if ($service.Status -eq 'Running') {exit 100} else {exit 101}
+        enforce:
+          interpreter: POWERSHELL
+          script: |
+            $SSMscript = Invoke-WebRequest -Uri "https://add-ons.manage.rackspace.com/bootstrap/gcp/gcp_bootstrap_ssm.ps1" -UseBasicParsing
+            Invoke-Expression -Command $SSMscript
+            exit 100

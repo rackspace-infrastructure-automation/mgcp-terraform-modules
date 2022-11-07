@@ -1,0 +1,7 @@
+*.key
+*sharedsecret.txt
+.terraform
+.terraform.lock.hcl
+terraform.state
+key.json
+.DS_Store
