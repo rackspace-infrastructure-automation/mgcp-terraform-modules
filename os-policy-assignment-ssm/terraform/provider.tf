@@ -11,8 +11,8 @@ terraform {
     }
   }
   backend "gcs" {
-    bucket = "test-tf-bucket-backend"
-    prefix = "os-config-mgmt"
+    bucket = "BACKENT_BUCKET"
+    prefix = "BUCKET_FOLDER"
   }
 }
 
