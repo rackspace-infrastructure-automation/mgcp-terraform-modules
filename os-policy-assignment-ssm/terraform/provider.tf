@@ -11,7 +11,7 @@ terraform {
     }
   }
   backend "gcs" {
-    bucket = "BACKENT_BUCKET"
+    bucket = "BACKEND_BUCKET"
     prefix = "BUCKET_FOLDER"
   }
 }
