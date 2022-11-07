@@ -1,0 +1,36 @@
+id: ssm-linux-policy
+mode: ENFORCEMENT
+resourceGroups:
+  - inventoryFilters:
+    - osShortName: debian
+    resources:
+      - id: install-ssm
+        exec:
+          validate:
+            interpreter: SHELL
+            script: if systemctl is-active --quiet amazon-ssm-agent; then exit 100; else exit 101; fi
+          enforce:
+            interpreter: SHELL
+            script: curl https://add-ons.manage.rackspace.com/bootstrap/gcp/install.sh | bash && exit 100
+  - inventoryFilters:
+    - osShortName: centos
+    resources:
+      - id: install-ssm
+        exec:
+          validate:
+            interpreter: SHELL
+            script: if systemctl is-active --quiet amazon-ssm-agent; then exit 100; else exit 101; fi
+          enforce:
+            interpreter: SHELL
+            script: curl https://add-ons.manage.rackspace.com/bootstrap/gcp/install.sh | bash && exit 100
+  - inventoryFilters:
+    - osShortName: ubuntu
+    resources:
+      - id: install-ssm
+        exec:
+          validate:
+            interpreter: SHELL
+            script: if systemctl is-active --quiet amazon-ssm-agent; then exit 100; else exit 101; fi
+          enforce:
+            interpreter: SHELL
+            script: curl https://add-ons.manage.rackspace.com/bootstrap/gcp/install.sh | bash && exit 100

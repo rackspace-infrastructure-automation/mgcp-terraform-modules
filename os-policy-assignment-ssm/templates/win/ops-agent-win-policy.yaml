@@ -1,0 +1,19 @@
+id: ops-agent-win-policy
+mode: ENFORCEMENT
+resourceGroups:
+  - resources:
+    - id: install-ops-agent
+      exec:
+        validate:
+          interpreter: POWERSHELL
+          script: |
+            $service = Get-Service -Name 'google-cloud-ops-agent'
+            if ($service.Status -eq 'Running') {exit 100} else {exit 101}
+        enforce:
+          interpreter: POWERSHELL
+          script: |
+            $DownloadDirectory = Test-Path -Path C:\rs-pkgs -PathType Container
+            if (-not $DownloadDirectory) {New-Item -Path C:\rs-pkgs -ItemType Directory}
+            (New-Object Net.WebClient).DownloadFile("https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.ps1", "C:\rs-pkgs\add-google-cloud-ops-agent-repo.ps1")
+            Invoke-Expression "C:\rs-pkgs\add-google-cloud-ops-agent-repo.ps1 -AlsoInstall"
+            exit 100
