@@ -4,6 +4,12 @@ This module creates a dynamic HA VPN (Beta)
 
 For single tunnel dynamic VPNs or static VPNs, use this module: https://github.com/terraform-google-modules/terraform-google-vpn
 
+!!! If you have found your way here because you have upgraded Terraform and the module is broken, please refer / migrate to the new module below !!!
+
+https://github.com/terraform-google-modules/terraform-google-vpn/tree/master/modules/vpn_ha
+
+You will need to 'convert' to the new module above and adjust code accordingly
+
 ```
 module "ha-vpn" {
   source = "git@github.com:racker/mgcp-terraform-modules//ha-vpn?ref=master"
