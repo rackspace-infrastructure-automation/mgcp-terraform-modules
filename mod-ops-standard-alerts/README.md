@@ -6,34 +6,40 @@ Ref: https://one.rackspace.com/display/ModOps/GCP+Standard+Monitoring+-+Modern+O
 
 ```
 module "rs_sd_policy" {
-  source = "git@github.com:racker/mgcp-terraform-modules//rs-sd-policy/?ref=master"
+  source = "git@github.com:racker/mgcp-terraform-modules//mod-ops-standard-alerts/?ref=master"
 
   watchman_token = "00000000000"
-  enabled = true
-  project_id = "someproject"
+  runbook = "This is link to runbook"
+
+  enabled    = true
+  project_id = var.project_id
 
   disk_usage = {
     enabled         = true
-    disk_percentage = 90
+    disk_percentage = 10
   }
 
   memory_usage = {
-    enabled = true
-    mem_threshold = 100
+    enabled       = false
+    mem_threshold = 98
+  }
+
+  nat_alert = {
+    enabled                         = true
+    threshold_value_dropped_packet  = 5
+    threshold_value_allocated_ports = 64512
+
   }
 
   uptime_check = {
+    enabled = false
+  }
+
+  sql_alert = {
     enabled = true
-  }
+    threshold_value_memory = 0.99
+    threshold_value_cpu    = 0.99
 
-### Shared VPC Alert Policies ###
-
-  nat_alert = {
-    enabled = false
-  }
-
-  ssh_rdp_fw_alert = {
-    enabled = false
   }
 }
 ```
