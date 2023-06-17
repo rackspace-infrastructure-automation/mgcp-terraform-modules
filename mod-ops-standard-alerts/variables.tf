@@ -91,7 +91,7 @@ variable "sql_alert" {
   })
   default = {
     enabled                = false
-    threshold_value_memory = 99
-    threshold_value_cpu    = 99
+    threshold_value_memory = 0.99
+    threshold_value_cpu    = 0.99
   }
 }
