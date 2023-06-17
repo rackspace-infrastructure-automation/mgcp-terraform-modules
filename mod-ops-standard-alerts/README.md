@@ -62,7 +62,7 @@ module "rs_sd_policy" {
 | project\_id | n/a | `string` | n/a | yes |
 | uptime\_check | Uptime Check Parameters |  <pre>object({<br>    enabled         = bool<br>   })<br></pre> | <pre>{<br>  "enabled": false,<br>}<br></pre> | no |
 | watchman\_token | n/a | `string` | n/a | yes |
-| runbook | `string` | n/a | yes
+| runbook | Link to customer runbook | `string` | n/a | yes
 
 ## Outputs
 
