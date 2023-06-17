@@ -32,15 +32,13 @@ variable "cpu_uage" {
 variable "memory_usage" {
   description = "Memory Usage Parameters"
   type = object({
-    enabled              = bool
-    mem_threshold_urgent = number
-    mem_threshold_high   = number
+    enabled       = bool
+    mem_threshold = number
   })
 
   default = {
     enabled              = false
     mem_threshold_urgent = 98
-    mem_threshold_high   = 95
   }
 }
 
