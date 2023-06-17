@@ -32,8 +32,8 @@ resource "google_monitoring_alert_policy" "cpu_usage" {
   notification_channels = [google_monitoring_notification_channel.rackspace_high.name]
 }
 
-resource "google_monitoring_alert_policy" "memory_usage" {
-  display_name = "RS-Base-GCE-Memory-Utilization"
+resource "google_monitoring_alert_policy" "memory_usage_urgent" {
+  display_name = "RS-Base-GCE-Memory-Utilization-Urgent"
   combiner     = "AND"
   enabled      = lookup(var.memory_usage, "enabled", false)
   conditions {
@@ -46,7 +46,7 @@ resource "google_monitoring_alert_policy" "memory_usage" {
               metadata.user_labels.monitored ="true"
               resource.type="gce_instance"
       EOT
-      duration   = "60s"
+      duration   = "900s"
       comparison = "COMPARISON_GT"
       aggregations {
         alignment_period     = "60s"
@@ -54,7 +54,7 @@ resource "google_monitoring_alert_policy" "memory_usage" {
         cross_series_reducer = "REDUCE_MEAN"
         group_by_fields      = ["project", "metadata.system_labels.name", "resource.label.instance_id", "resource.label.zone"]
       }
-      threshold_value = lookup(var.memory_usage, "mem_threshold", 98)
+      threshold_value = lookup(var.memory_usage, "mem_threshold_urgent", 98)
       trigger {
         count = 1
       }
@@ -64,8 +64,44 @@ resource "google_monitoring_alert_policy" "memory_usage" {
     mime_type = "text/markdown"
     content   = var.runbook
   }
-  notification_channels = [google_monitoring_notification_channel.rackspace_emergency.name]
+  notification_channels = [google_monitoring_notification_channel.rackspace_urgent.name]
 }
+
+resource "google_monitoring_alert_policy" "memory_usage_high" {
+  display_name = "RS-Base-GCE-Memory-Utilization-Urgent-High"
+  combiner     = "AND"
+  enabled      = lookup(var.memory_usage, "enabled", false)
+  conditions {
+    display_name = "Metric Threshold on All Instance (GCE)s"
+    condition_threshold {
+      filter     = <<EOT
+              metric.label.state="used" AND
+              metric.type="agent.googleapis.com/memory/percent_used" AND
+              metadata.user_labels.autoscaled="false" AND
+              metadata.user_labels.monitored ="true"
+              resource.type="gce_instance"
+      EOT
+      duration   = "900s"
+      comparison = "COMPARISON_GT"
+      aggregations {
+        alignment_period     = "60s"
+        per_series_aligner   = "ALIGN_MEAN"
+        cross_series_reducer = "REDUCE_MEAN"
+        group_by_fields      = ["project", "metadata.system_labels.name", "resource.label.instance_id", "resource.label.zone"]
+      }
+      threshold_value = lookup(var.memory_usage, "mem_threshold_high", 95)
+      trigger {
+        count = 1
+      }
+    }
+  }
+  documentation {
+    mime_type = "text/markdown"
+    content   = var.runbook
+  }
+  notification_channels = [google_monitoring_notification_channel.rackspace_high.name]
+}
+
 
 resource "google_monitoring_alert_policy" "uptime_check" {
   display_name = "RS-Base-GCE-Uptime-Check"
