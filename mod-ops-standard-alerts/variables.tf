@@ -37,7 +37,7 @@ variable "memory_usage" {
   })
 
   default = {
-    enabled              = false
+    enabled       = false
     mem_threshold = 98
   }
 }
@@ -69,8 +69,8 @@ variable "disk_usage" {
 
 variable "create_nat_policies" {
   description = "Create NAT policies"
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 variable "nat_alert" {
@@ -89,8 +89,8 @@ variable "nat_alert" {
 
 variable "create_sql_policies" {
   description = "Create Cloud SQL policies"
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 variable "sql_alert" {
