@@ -8,7 +8,7 @@ resource "google_monitoring_alert_policy" "cpu_usage" {
       filter     = <<EOT
               metric.type="compute.googleapis.com/instance/cpu/utilization" AND
               metadata.user_labels.autoscaled="false" AND
-              metadata.user_labels.monitored ="true"
+              metadata.user_labels.monitored ="true" AND
               resource.type="gce_instance"
       EOT
       duration   = "300s"
@@ -43,7 +43,7 @@ resource "google_monitoring_alert_policy" "memory_usage" {
               metric.label.state="used" AND
               metric.type="agent.googleapis.com/memory/percent_used" AND
               metadata.user_labels.autoscaled="false" AND
-              metadata.user_labels.monitored ="true"
+              metadata.user_labels.monitored ="true" AND
               resource.type="gce_instance"
       EOT
       duration   = "900s"
@@ -77,7 +77,7 @@ resource "google_monitoring_alert_policy" "uptime_check" {
       filter     = <<EOT
               metric.type="compute.googleapis.com/instance/uptime" AND
               metadata.user_labels.autoscaled="false" AND
-              metadata.user_labels.monitored ="true"
+              metadata.user_labels.monitored ="true" AND
               resource.type="gce_instance"
       EOT
       duration   = "900s"
