@@ -1,4 +1,4 @@
-# rs-sd-policy
+# mod-ops-standard-alerts
 
 This module creates the Rackspace Standard Monitoring policies for Modern operations
 
