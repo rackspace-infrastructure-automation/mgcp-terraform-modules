@@ -1,7 +1,7 @@
 resource "google_monitoring_alert_policy" "cpu_usage" {
   display_name = "RS-Base-GCE-CPU-Utilization"
   combiner     = "AND"
-  enabled      = lookup(var.cpu_uage, "enabled", false)
+  enabled      = lookup(var.cpu_usage, "enabled", false)
   conditions {
     display_name = "Metric Threshold on All Instance (GCE)s"
     condition_threshold {
@@ -19,7 +19,7 @@ resource "google_monitoring_alert_policy" "cpu_usage" {
         cross_series_reducer = "REDUCE_MEAN"
         group_by_fields      = ["project", "metadata.system_labels.name", "resource.label.zone"]
       }
-      threshold_value = lookup(var.cpu_uage, "cpu_threshold", 0.95)
+      threshold_value = lookup(var.cpu_usage, "cpu_threshold", 0.95)
       trigger {
         count = 1
       }
@@ -141,7 +141,7 @@ resource "google_monitoring_alert_policy" "disk_usage" {
 
 
 resource "google_monitoring_alert_policy" "nat_dropped_packet_out_of_resource" {
-  count        = lookup(var.nat_alert, "enabled", false) == true ? 1 : 0
+  count        = var.create_nat_policies == true ? 1 : 0
   display_name = "RS-Base-NAT-Dropped-Packet-Out-Of-Resource"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = lookup(var.nat_alert, "enabled", false)
@@ -176,7 +176,7 @@ resource "google_monitoring_alert_policy" "nat_dropped_packet_out_of_resource" {
 }
 
 resource "google_monitoring_alert_policy" "nat_dropped_packet_endpoint_map" {
-  count        = lookup(var.nat_alert, "enabled", false) == true ? 1 : 0
+  count        = var.create_nat_policies == true ? 1 : 0
   display_name = "RS-Base-NAT-Dropped-Packet-Endpoint-Map"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = lookup(var.nat_alert, "enabled", false)
@@ -211,7 +211,7 @@ resource "google_monitoring_alert_policy" "nat_dropped_packet_endpoint_map" {
 }
 
 resource "google_monitoring_alert_policy" "nat_allocation_fail" {
-  count        = lookup(var.nat_alert, "enabled", false) == true ? 1 : 0
+  count        = var.create_nat_policies == true ? 1 : 0
   display_name = "RS-Base-NAT-Allocation-Fail"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = lookup(var.nat_alert, "enabled", false)
@@ -245,7 +245,7 @@ resource "google_monitoring_alert_policy" "nat_allocation_fail" {
 }
 
 resource "google_monitoring_alert_policy" "nat_port_exhaust" {
-  count        = lookup(var.nat_alert, "enabled", false) == true ? 1 : 0
+  count        = var.create_nat_policies == true ? 1 : 0
   display_name = "RS-Base-NAT-Port-Exhaust"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = lookup(var.nat_alert, "enabled", false)
@@ -279,7 +279,7 @@ resource "google_monitoring_alert_policy" "nat_port_exhaust" {
 }
 
 resource "google_monitoring_alert_policy" "csql_memory_utilization" {
-  count        = lookup(var.sql_alert, "enabled", false) == true ? 1 : 0
+  count        = var.create_sql_policies == true ? 1 : 0
   display_name = "RS-Base-MEM-CSQL"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = lookup(var.nat_alert, "enabled", false)
@@ -313,7 +313,7 @@ resource "google_monitoring_alert_policy" "csql_memory_utilization" {
 }
 
 resource "google_monitoring_alert_policy" "csql_cpu_utilization" {
-  count        = lookup(var.sql_alert, "enabled", false) == true ? 1 : 0
+  count        = var.create_sql_policies == true ? 1 : 0
   display_name = "RS-Base-CPU-CSQL"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = lookup(var.sql_alert, "enabled", false)

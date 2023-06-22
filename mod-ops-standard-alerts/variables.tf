@@ -16,11 +16,11 @@ variable "runbook" {
   default = "This section should include customer runbook"
 }
 
-variable "cpu_uage" {
+variable "cpu_usage" {
   description = "CPU Utilisation Parameters"
   type = object({
     enabled       = bool
-    cpu_threshold = number
+    cpu_threshold = optional(number)
   })
 
   default = {
@@ -33,11 +33,11 @@ variable "memory_usage" {
   description = "Memory Usage Parameters"
   type = object({
     enabled       = bool
-    mem_threshold = number
+    mem_threshold = optional(number)
   })
 
   default = {
-    enabled       = false
+    enabled              = false
     mem_threshold = 98
   }
 }
@@ -58,7 +58,7 @@ variable "disk_usage" {
   description = "Disk usage Parameters"
   type = object({
     enabled         = bool
-    disk_percentage = number
+    disk_percentage = optional(number)
   })
 
   default = {
@@ -67,13 +67,18 @@ variable "disk_usage" {
   }
 }
 
+variable "create_nat_policies" {
+  description = "Create NAT policies"
+  type = bool
+  default = false
+}
 
 variable "nat_alert" {
   description = "NAT Gateway Parameters"
   type = object({
     enabled                         = bool
-    threshold_value_dropped_packet  = number
-    threshold_value_allocated_ports = number
+    threshold_value_dropped_packet  = optional(number)
+    threshold_value_allocated_ports = optional(number)
   })
   default = {
     enabled                         = false
@@ -82,12 +87,18 @@ variable "nat_alert" {
   }
 }
 
+variable "create_sql_policies" {
+  description = "Create Cloud SQL policies"
+  type = bool
+  default = false
+}
+
 variable "sql_alert" {
   description = "Cloud SQL Parameters"
   type = object({
     enabled                = bool
-    threshold_value_memory = number
-    threshold_value_cpu    = number
+    threshold_value_memory = optional(number)
+    threshold_value_cpu    = optional(number)
   })
   default = {
     enabled                = false
