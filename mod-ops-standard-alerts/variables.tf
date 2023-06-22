@@ -38,7 +38,7 @@ variable "memory_usage" {
 
   default = {
     enabled              = false
-    mem_threshold_urgent = 98
+    mem_threshold = 98
   }
 }
 
