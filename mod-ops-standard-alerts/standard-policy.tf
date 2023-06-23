@@ -1,7 +1,7 @@
 resource "google_monitoring_alert_policy" "cpu_usage" {
   display_name = "RS-Base-GCE-CPU-Utilization"
   combiner     = "AND"
-  enabled      = lookup(var.cpu_usage, "enabled", false)
+  enabled      = var.cpu_usage["enabled"]
   conditions {
     display_name = "Metric Threshold on All Instance (GCE)s"
     condition_threshold {
@@ -19,7 +19,7 @@ resource "google_monitoring_alert_policy" "cpu_usage" {
         cross_series_reducer = "REDUCE_MEAN"
         group_by_fields      = ["project", "metadata.system_labels.name", "resource.label.zone"]
       }
-      threshold_value = lookup(var.cpu_usage, "cpu_threshold", 0.95)
+      threshold_value = var.cpu_usage["cpu_threshold"]
       trigger {
         count = 1
       }
@@ -35,7 +35,7 @@ resource "google_monitoring_alert_policy" "cpu_usage" {
 resource "google_monitoring_alert_policy" "memory_usage" {
   display_name = "RS-Base-GCE-Memory-Utilization"
   combiner     = "AND"
-  enabled      = lookup(var.memory_usage, "enabled", false)
+  enabled      = var.memory_usage["enabled"]
   conditions {
     display_name = "Metric Threshold on All Instance (GCE)s"
     condition_threshold {
@@ -54,7 +54,7 @@ resource "google_monitoring_alert_policy" "memory_usage" {
         cross_series_reducer = "REDUCE_MEAN"
         group_by_fields      = ["project", "metadata.system_labels.name", "resource.label.instance_id", "resource.label.zone"]
       }
-      threshold_value = lookup(var.memory_usage, "mem_threshold", 98)
+      threshold_value = var.memory_usage["mem_threshold"]
       trigger {
         count = 1
       }
@@ -70,7 +70,7 @@ resource "google_monitoring_alert_policy" "memory_usage" {
 resource "google_monitoring_alert_policy" "uptime_check" {
   display_name = "RS-Base-GCE-Uptime-Check"
   combiner     = "OR"
-  enabled      = lookup(var.uptime_check, "enabled", false)
+  enabled      = var.uptime_check["enabled"]
   conditions {
     display_name = "Uptime check for GCE INSTANCE - Platform"
     condition_threshold {
@@ -104,7 +104,7 @@ resource "google_monitoring_alert_policy" "uptime_check" {
 resource "google_monitoring_alert_policy" "disk_usage" {
   display_name = "RS-Base-GCE-Disk-Utilization"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
-  enabled      = lookup(var.disk_usage, "enabled", false)
+  enabled      = var.disk_usage["enabled"]
   conditions {
     display_name = "Metric Threshold on All Instance (GCE)s"
     condition_threshold {
@@ -124,7 +124,7 @@ resource "google_monitoring_alert_policy" "disk_usage" {
         cross_series_reducer = "REDUCE_MEAN"
         group_by_fields      = ["project", "metadata.system_labels.name", "metric.label.device", "resource.label.zone"]
       }
-      threshold_value = lookup(var.disk_usage, "disk_percentage", 10)
+      threshold_value = var.disk_usage["disk_percentage"]
       trigger {
         count = 1
       }
@@ -141,10 +141,10 @@ resource "google_monitoring_alert_policy" "disk_usage" {
 
 
 resource "google_monitoring_alert_policy" "nat_dropped_packet_out_of_resource" {
-  count        = var.create_nat_policies == true ? 1 : 0
+  count        = var.nat_alert["create_policy"] == true ? 1 : 0
   display_name = "RS-Base-NAT-Dropped-Packet-Out-Of-Resource"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
-  enabled      = lookup(var.nat_alert, "enabled", false)
+  enabled      = var.nat_alert["enabled"]
   conditions {
     display_name = "Cloud NAT Gateway - Sent packets dropped count"
     condition_threshold {
@@ -161,7 +161,7 @@ resource "google_monitoring_alert_policy" "nat_dropped_packet_out_of_resource" {
         cross_series_reducer = "REDUCE_MEAN"
         group_by_fields      = ["metric.label.ip_protocol", "metric.label.reason", "resource.label.project_id", "resource.label.router_id", "project"]
       }
-      threshold_value = lookup(var.nat_alert, "threshold_value_dropped_packet", 0)
+      threshold_value = var.nat_alert["threshold_value_dropped_packet"]
       trigger {
         count = 1
       }
@@ -176,10 +176,10 @@ resource "google_monitoring_alert_policy" "nat_dropped_packet_out_of_resource" {
 }
 
 resource "google_monitoring_alert_policy" "nat_dropped_packet_endpoint_map" {
-  count        = var.create_nat_policies == true ? 1 : 0
+  count        = var.nat_alert["create_policy"] == true ? 1 : 0
   display_name = "RS-Base-NAT-Dropped-Packet-Endpoint-Map"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
-  enabled      = lookup(var.nat_alert, "enabled", false)
+  enabled      = var.nat_alert["enabled"]
   conditions {
     display_name = "Cloud NAT Gateway - Sent packets dropped count"
     condition_threshold {
@@ -196,7 +196,7 @@ resource "google_monitoring_alert_policy" "nat_dropped_packet_endpoint_map" {
         cross_series_reducer = "REDUCE_MEAN"
         group_by_fields      = ["metric.label.ip_protocol", "metric.label.reason", "resource.label.project_id", "resource.label.router_id", "project"]
       }
-      threshold_value = lookup(var.nat_alert, "threshold_value_dropped_packet", 0)
+      threshold_value = var.nat_alert["threshold_value_dropped_packet"]
       trigger {
         count = 1
       }
@@ -211,10 +211,10 @@ resource "google_monitoring_alert_policy" "nat_dropped_packet_endpoint_map" {
 }
 
 resource "google_monitoring_alert_policy" "nat_allocation_fail" {
-  count        = var.create_nat_policies == true ? 1 : 0
+  count        = var.nat_alert["create_policy"] == true ? 1 : 0
   display_name = "RS-Base-NAT-Allocation-Fail"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
-  enabled      = lookup(var.nat_alert, "enabled", false)
+  enabled      = var.nat_alert["enabled"]
   conditions {
     display_name = "Cloud NAT Gateway - NAT allocation failed"
     condition_threshold {
@@ -245,10 +245,10 @@ resource "google_monitoring_alert_policy" "nat_allocation_fail" {
 }
 
 resource "google_monitoring_alert_policy" "nat_port_exhaust" {
-  count        = var.create_nat_policies == true ? 1 : 0
+  count        = var.nat_alert["create_policy"] == true ? 1 : 0
   display_name = "RS-Base-NAT-Port-Exhaust"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
-  enabled      = lookup(var.nat_alert, "enabled", false)
+  enabled      = var.nat_alert["enabled"]
   conditions {
     display_name = "Cloud NAT Gateway - Allocated ports"
     condition_threshold {
@@ -264,7 +264,7 @@ resource "google_monitoring_alert_policy" "nat_port_exhaust" {
         cross_series_reducer = "REDUCE_MEAN"
         group_by_fields      = ["metric.label.nat_ip", "resource.label.project_id", "resource.label.router_id", ]
       }
-      threshold_value = lookup(var.nat_alert, "threshold_value_allocated_ports", 58060)
+      threshold_value = var.nat_alert["threshold_value_allocated_ports"]
       trigger {
         count = 1
       }
@@ -279,10 +279,10 @@ resource "google_monitoring_alert_policy" "nat_port_exhaust" {
 }
 
 resource "google_monitoring_alert_policy" "csql_memory_utilization" {
-  count        = var.create_sql_policies == true ? 1 : 0
+  count        = var.sql_alert["create_policy"] == true ? 1 : 0
   display_name = "RS-Base-MEM-CSQL"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
-  enabled      = lookup(var.nat_alert, "enabled", false)
+  enabled      = var.sql_alert["enabled"]
   conditions {
     display_name = "Cloud SQL Database - Memory utilization"
     condition_threshold {
@@ -298,7 +298,7 @@ resource "google_monitoring_alert_policy" "csql_memory_utilization" {
         cross_series_reducer = "REDUCE_MEAN"
         group_by_fields      = ["resource.label.project_id", "resource.label.database_id", "resource.label.region"]
       }
-      threshold_value = lookup(var.sql_alert, "threshold_value_memory", 0.99)
+      threshold_value = var.sql_alert["threshold_value_memory"]
       trigger {
         count = 1
       }
@@ -313,10 +313,10 @@ resource "google_monitoring_alert_policy" "csql_memory_utilization" {
 }
 
 resource "google_monitoring_alert_policy" "csql_cpu_utilization" {
-  count        = var.create_sql_policies == true ? 1 : 0
+  count        = var.sql_alert["create_policy"] == true ? 1 : 0
   display_name = "RS-Base-CPU-CSQL"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
-  enabled      = lookup(var.sql_alert, "enabled", false)
+  enabled      = var.sql_alert["enabled"]
   conditions {
     display_name = "Cloud SQL Database - CPU utilization"
     condition_threshold {
@@ -332,7 +332,7 @@ resource "google_monitoring_alert_policy" "csql_cpu_utilization" {
         cross_series_reducer = "REDUCE_MEAN"
         group_by_fields      = ["resource.label.project_id", "resource.label.database_id", "resource.label.region"]
       }
-      threshold_value = lookup(var.sql_alert, "threshold_value_cpu", 0.99)
+      threshold_value = var.sql_alert["threshold_value_cpu"]
       trigger {
         count = 1
       }

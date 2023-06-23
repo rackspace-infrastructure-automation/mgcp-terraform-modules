@@ -19,8 +19,8 @@ variable "runbook" {
 variable "cpu_usage" {
   description = "CPU Utilisation Parameters"
   type = object({
-    enabled       = bool
-    cpu_threshold = optional(number)
+    enabled       = optional(bool, false)
+    cpu_threshold = optional(number, 0.95)
   })
 
   default = {
@@ -32,12 +32,12 @@ variable "cpu_usage" {
 variable "memory_usage" {
   description = "Memory Usage Parameters"
   type = object({
-    enabled       = bool
-    mem_threshold = optional(number)
+    enabled       = optional(bool, false)
+    mem_threshold = optional(number, 98)
   })
 
   default = {
-    enabled       = false
+    enabled              = false
     mem_threshold = 98
   }
 }
@@ -45,7 +45,7 @@ variable "memory_usage" {
 variable "uptime_check" {
   description = "Uptime Check Parameters"
   type = object({
-    enabled = bool
+    enabled = optional(bool, false)
   })
 
   default = {
@@ -57,8 +57,8 @@ variable "uptime_check" {
 variable "disk_usage" {
   description = "Disk usage Parameters"
   type = object({
-    enabled         = bool
-    disk_percentage = optional(number)
+    enabled         = optional(bool, false)
+    disk_percentage = optional(number, 10)
   })
 
   default = {
@@ -67,20 +67,16 @@ variable "disk_usage" {
   }
 }
 
-variable "create_nat_policies" {
-  description = "Create NAT policies"
-  type        = bool
-  default     = false
-}
-
 variable "nat_alert" {
   description = "NAT Gateway Parameters"
   type = object({
-    enabled                         = bool
-    threshold_value_dropped_packet  = optional(number)
-    threshold_value_allocated_ports = optional(number)
+    create_policy                   = optional(bool, false)
+    enabled                         = optional(bool, false)
+    threshold_value_dropped_packet  = optional(number, 0)
+    threshold_value_allocated_ports = optional(number, 64512)
   })
   default = {
+    create_policy                   = false
     enabled                         = false
     threshold_value_dropped_packet  = 0
     threshold_value_allocated_ports = 64512
@@ -89,16 +85,17 @@ variable "nat_alert" {
 
 variable "create_sql_policies" {
   description = "Create Cloud SQL policies"
-  type        = bool
-  default     = false
+  type = bool
+  default = false
 }
 
 variable "sql_alert" {
   description = "Cloud SQL Parameters"
   type = object({
-    enabled                = bool
-    threshold_value_memory = optional(number)
-    threshold_value_cpu    = optional(number)
+    create_policy          = optional(bool, false)
+    enabled                = optional(bool, false)
+    threshold_value_memory = optional(number, 0.99)
+    threshold_value_cpu    = optional(number, 0.99)
   })
   default = {
     enabled                = false
