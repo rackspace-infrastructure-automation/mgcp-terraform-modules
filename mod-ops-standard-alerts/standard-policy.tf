@@ -27,7 +27,7 @@ resource "google_monitoring_alert_policy" "cpu_usage" {
   }
   documentation {
     mime_type = "text/markdown"
-    content   = var.runbook
+    content   = lookup(var.runbook, "vm_cpu", var.default_runbook["vm_cpu"])
   }
   notification_channels = [google_monitoring_notification_channel.rackspace_high.name]
 }
@@ -62,7 +62,7 @@ resource "google_monitoring_alert_policy" "memory_usage" {
   }
   documentation {
     mime_type = "text/markdown"
-    content   = var.runbook
+    content   = lookup(var.runbook, "vm_mem", var.default_runbook["vm_mem"])
   }
   notification_channels = [google_monitoring_notification_channel.rackspace_urgent.name]
 }
@@ -96,7 +96,7 @@ resource "google_monitoring_alert_policy" "uptime_check" {
   }
   documentation {
     mime_type = "text/markdown"
-    content   = var.runbook
+    content   = lookup(var.runbook, "uptime_check", var.default_runbook["uptime_check"])
   }
   notification_channels = [google_monitoring_notification_channel.rackspace_emergency.name]
 }
@@ -132,7 +132,7 @@ resource "google_monitoring_alert_policy" "disk_usage" {
   }
   documentation {
     mime_type = "text/markdown"
-    content   = var.runbook
+    content   = lookup(var.runbook, "vm_disk", var.default_runbook["vm_disk"])
   }
 
   notification_channels = [google_monitoring_notification_channel.rackspace_urgent.name]
@@ -169,7 +169,7 @@ resource "google_monitoring_alert_policy" "nat_dropped_packet_out_of_resource" {
   }
   documentation {
     mime_type = "text/markdown"
-    content   = var.runbook
+    content   = lookup(var.runbook, "nat_dropped_packet", var.default_runbook["nat_dropped_packet"])
   }
 
   notification_channels = [google_monitoring_notification_channel.rackspace_urgent.name]
@@ -204,7 +204,7 @@ resource "google_monitoring_alert_policy" "nat_dropped_packet_endpoint_map" {
   }
   documentation {
     mime_type = "text/markdown"
-    content   = var.runbook
+    content   = lookup(var.runbook, "nat_endpoint_map", var.default_runbook["nat_endpoint_map"])
   }
 
   notification_channels = [google_monitoring_notification_channel.rackspace_urgent.name]
@@ -238,7 +238,7 @@ resource "google_monitoring_alert_policy" "nat_allocation_fail" {
   }
   documentation {
     mime_type = "text/markdown"
-    content   = var.runbook
+    content   = lookup(var.runbook, "nat_allocation_fail", var.default_runbook["nat_allocation_fail"])
   }
 
   notification_channels = [google_monitoring_notification_channel.rackspace_urgent.name]
@@ -272,7 +272,7 @@ resource "google_monitoring_alert_policy" "nat_port_exhaust" {
   }
   documentation {
     mime_type = "text/markdown"
-    content   = var.runbook
+    content   = lookup(var.runbook, "nat_port_exhaust", var.default_runbook["nat_port_exhaust"])
   }
 
   notification_channels = [google_monitoring_notification_channel.rackspace_urgent.name]
@@ -306,7 +306,7 @@ resource "google_monitoring_alert_policy" "csql_memory_utilization" {
   }
   documentation {
     mime_type = "text/markdown"
-    content   = var.runbook
+    content   = lookup(var.runbook, "csql_mem", var.default_runbook["csql_mem"])
   }
 
   notification_channels = [google_monitoring_notification_channel.rackspace_urgent.name]
@@ -340,7 +340,7 @@ resource "google_monitoring_alert_policy" "csql_cpu_utilization" {
   }
   documentation {
     mime_type = "text/markdown"
-    content   = var.runbook
+    content   = lookup(var.runbook, "csql_cpu", var.default_runbook["csql_cpu"])
   }
 
   notification_channels = [google_monitoring_notification_channel.rackspace_urgent.name]

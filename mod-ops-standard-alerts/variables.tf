@@ -12,8 +12,26 @@ variable "enabled" {
 }
 
 variable "runbook" {
-  type    = string
-  default = "This section should include customer runbook"
+  description = "Link to Customer Runbook"
+  type    = map
+  default = {}
+}
+
+variable "default_runbook" {
+  description = "Link to default Runbook"
+  type    = map
+  default = {
+    vm_disk = "www.link_to_default_runbook_wiki_disk_section.com"
+    vm_cpu  = "www.link_to_default_runbook_wiki_vm_cpu_usage_section.com"
+    vm_mem  = "www.link_to_default_runbook_wiki_vm_mem_usage_section.com"
+    uptime_check = "www.link_to_default_runbook_wiki_vm_uptime_check_section.com"
+    nat_dropped_packet = "www.link_to_default_runbook_wiki_nat_dropped_packet_section.com"
+    nat_endpoint_map = "www.link_to_default_runbook_wiki_nat_endpoint_map_section.com"
+    nat_allocation_fail = "www.link_to_default_runbook_wiki_nat_allocation_fail_section.com"
+    nat_port_exhaust = "www.link_to_default_runbook_wiki_nat_port_exhaust_section.com"
+    csql_mem = "www.link_to_default_runbook_wiki_csql_mem_section.com"
+    csql_cpu = "www.link_to_default_runbook_wiki_csql_cpu_section.com"
+  }
 }
 
 variable "cpu_usage" {
