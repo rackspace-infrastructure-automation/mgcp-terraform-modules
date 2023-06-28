@@ -13,24 +13,24 @@ variable "enabled" {
 
 variable "runbook" {
   description = "Link to Customer Runbook"
-  type    = map
-  default = {}
+  type        = map(string)
+  default     = {}
 }
 
 variable "default_runbook" {
   description = "Link to default Runbook"
-  type    = map
+  type        = map(string)
   default = {
-    vm_disk = "www.link_to_default_runbook_wiki_disk_section.com"
-    vm_cpu  = "www.link_to_default_runbook_wiki_vm_cpu_usage_section.com"
-    vm_mem  = "www.link_to_default_runbook_wiki_vm_mem_usage_section.com"
-    uptime_check = "www.link_to_default_runbook_wiki_vm_uptime_check_section.com"
-    nat_dropped_packet = "www.link_to_default_runbook_wiki_nat_dropped_packet_section.com"
-    nat_endpoint_map = "www.link_to_default_runbook_wiki_nat_endpoint_map_section.com"
-    nat_allocation_fail = "www.link_to_default_runbook_wiki_nat_allocation_fail_section.com"
-    nat_port_exhaust = "www.link_to_default_runbook_wiki_nat_port_exhaust_section.com"
-    csql_mem = "www.link_to_default_runbook_wiki_csql_mem_section.com"
-    csql_cpu = "www.link_to_default_runbook_wiki_csql_cpu_section.com"
+    vm_disk             = "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Standard/RecommendedMonitors"
+    vm_cpu              = "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Standard/RecommendedMonitors"
+    vm_mem              = "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Standard/RecommendedMonitors"
+    uptime_check        = "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Standard/RecommendedMonitors"
+    nat_dropped_packet  = "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Networking(NAT)"
+    nat_endpoint_map    = "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Networking(NAT)"
+    nat_allocation_fail = "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Networking(NAT)"
+    nat_port_exhaust    = "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Networking(NAT)"
+    csql_mem            = "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Databases-CloudSQL(asperCustomerRequirement)"
+    csql_cpu            = "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Databases-CloudSQL(asperCustomerRequirement)"
   }
 }
 
@@ -41,10 +41,7 @@ variable "cpu_usage" {
     cpu_threshold = optional(number, 0.95)
   })
 
-  default = {
-    enabled       = false
-    cpu_threshold = 0.95
-  }
+  default = {}
 }
 
 variable "memory_usage" {
@@ -54,10 +51,7 @@ variable "memory_usage" {
     mem_threshold = optional(number, 98)
   })
 
-  default = {
-    enabled              = false
-    mem_threshold = 98
-  }
+  default = {}
 }
 
 variable "uptime_check" {
@@ -66,9 +60,7 @@ variable "uptime_check" {
     enabled = optional(bool, false)
   })
 
-  default = {
-    enabled = false
-  }
+  default = {}
 }
 
 
@@ -79,10 +71,7 @@ variable "disk_usage" {
     disk_percentage = optional(number, 10)
   })
 
-  default = {
-    enabled         = false
-    disk_percentage = 10
-  }
+  default = {}
 }
 
 variable "nat_alert" {
@@ -93,18 +82,7 @@ variable "nat_alert" {
     threshold_value_dropped_packet  = optional(number, 0)
     threshold_value_allocated_ports = optional(number, 64512)
   })
-  default = {
-    create_policy                   = false
-    enabled                         = false
-    threshold_value_dropped_packet  = 0
-    threshold_value_allocated_ports = 64512
-  }
-}
-
-variable "create_sql_policies" {
-  description = "Create Cloud SQL policies"
-  type = bool
-  default = false
+  default = {}
 }
 
 variable "sql_alert" {
@@ -115,9 +93,5 @@ variable "sql_alert" {
     threshold_value_memory = optional(number, 0.99)
     threshold_value_cpu    = optional(number, 0.99)
   })
-  default = {
-    enabled                = false
-    threshold_value_memory = 0.99
-    threshold_value_cpu    = 0.99
-  }
+  default = {}
 }
