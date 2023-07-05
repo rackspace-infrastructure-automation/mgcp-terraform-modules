@@ -12,6 +12,12 @@ variable "runbook" {
   default     = {}
 }
 
+variable "enabled" {
+  description = "Enable notification channels"
+  type = bool
+  default = false
+}
+
 variable "default_runbook" {
   description = "Link to default Runbook"
   type        = map(string)
