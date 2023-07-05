@@ -290,7 +290,7 @@ resource "google_monitoring_alert_policy" "csql_memory_utilization" {
               resource.type = "cloudsql_database" AND
               metric.type = "cloudsql.googleapis.com/database/memory/utilization"
       EOT
-      duration   = "0s"
+      duration   = "600s"
       comparison = "COMPARISON_GT"
       aggregations {
         alignment_period     = "900s"
@@ -324,7 +324,7 @@ resource "google_monitoring_alert_policy" "csql_cpu_utilization" {
               resource.type = "cloudsql_database" AND
               metric.type = "cloudsql.googleapis.com/database/cpu/utilization"
       EOT
-      duration   = "0s"
+      duration   = "600s"
       comparison = "COMPARISON_GT"
       aggregations {
         alignment_period     = "900s"
