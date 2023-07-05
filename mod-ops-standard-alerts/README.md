@@ -4,42 +4,29 @@ This module creates the Rackspace Standard Monitoring policies for Modern operat
 
 Ref: https://one.rackspace.com/display/ModOps/GCP+Standard+Monitoring+-+Modern+Operations
 
+
+## Usage example
 ```
 module "rs_sd_policy" {
-  source = "git@github.com:racker/mgcp-terraform-modules//mod-ops-standard-alerts/?ref=master"
-
-  watchman_token = "00000000000"
-  runbook = "This is link to runbook"
-
-  enabled    = true
-  project_id = var.project_id
-
-  disk_usage = {
-    enabled         = true
-    disk_percentage = 10
-  }
-
-  memory_usage = {
-    enabled       = false
-    mem_threshold = 98
-  }
-
+  source         = "github.com/rackspace-infrastructure-automation/mgcp-terraform-modules//mod-ops-standard-alerts"
+  project_id     = var.project_id
+  watchman_token = "000000000000000000000"
   nat_alert = {
-    enabled                         = true
-    threshold_value_dropped_packet  = 5
-    threshold_value_allocated_ports = 64512
-
+    enable        = true
+    create_policy = true
   }
-
-  uptime_check = {
-    enabled = false
-  }
-
   sql_alert = {
+    enable        = true
+    create_policy = true
+  }
+  cpu_usage = {
     enabled = true
-    threshold_value_memory = 0.99
-    threshold_value_cpu    = 0.99
-
+  }
+  memory_usage = {
+    enabled = true
+  }
+  uptime_check = {
+    enabled = true
   }
 }
 ```

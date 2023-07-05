@@ -6,11 +6,6 @@ variable "watchman_token" {
   type = string
 }
 
-variable "enabled" {
-  type    = bool
-  default = false
-}
-
 variable "runbook" {
   description = "Link to Customer Runbook"
   type        = map(string)
