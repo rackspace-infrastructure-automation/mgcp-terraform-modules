@@ -14,8 +14,8 @@ variable "runbook" {
 
 variable "enabled" {
   description = "Enable notification channels"
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 variable "default_runbook" {
