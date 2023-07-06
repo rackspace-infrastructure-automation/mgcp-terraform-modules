@@ -2,6 +2,9 @@ resource "google_monitoring_alert_policy" "cpu_usage" {
   display_name = "RS-Base-GCE-CPU-Utilization"
   combiner     = "AND"
   enabled      = var.cpu_usage["enabled"]
+  alert_strategy {
+    auto_close = "86400s"
+  }
   conditions {
     display_name = "Metric Threshold on All Instance (GCE)s"
     condition_threshold {
@@ -36,6 +39,9 @@ resource "google_monitoring_alert_policy" "memory_usage" {
   display_name = "RS-Base-GCE-Memory-Utilization"
   combiner     = "AND"
   enabled      = var.memory_usage["enabled"]
+  alert_strategy {
+    auto_close = "86400s"
+  }
   conditions {
     display_name = "Metric Threshold on All Instance (GCE)s"
     condition_threshold {
@@ -71,6 +77,9 @@ resource "google_monitoring_alert_policy" "uptime_check" {
   display_name = "RS-Base-GCE-Uptime-Check"
   combiner     = "OR"
   enabled      = var.uptime_check["enabled"]
+  alert_strategy {
+    auto_close = "86400s"
+  }
   conditions {
     display_name = "Uptime check for GCE INSTANCE - Platform"
     condition_threshold {
@@ -105,6 +114,9 @@ resource "google_monitoring_alert_policy" "disk_usage" {
   display_name = "RS-Base-GCE-Disk-Utilization"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = var.disk_usage["enabled"]
+  alert_strategy {
+    auto_close = "86400s"
+  }
   conditions {
     display_name = "Metric Threshold on All Instance (GCE)s"
     condition_threshold {
@@ -145,6 +157,9 @@ resource "google_monitoring_alert_policy" "nat_dropped_packet_out_of_resource" {
   display_name = "RS-Base-NAT-Dropped-Packet-Out-Of-Resource"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = var.nat_alert["enabled"]
+  alert_strategy {
+    auto_close = "86400s"
+  }
   conditions {
     display_name = "Cloud NAT Gateway - Sent packets dropped count"
     condition_threshold {
@@ -180,6 +195,9 @@ resource "google_monitoring_alert_policy" "nat_dropped_packet_endpoint_map" {
   display_name = "RS-Base-NAT-Dropped-Packet-Endpoint-Map"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = var.nat_alert["enabled"]
+  alert_strategy {
+    auto_close = "86400s"
+  }
   conditions {
     display_name = "Cloud NAT Gateway - Sent packets dropped count"
     condition_threshold {
@@ -215,6 +233,9 @@ resource "google_monitoring_alert_policy" "nat_allocation_fail" {
   display_name = "RS-Base-NAT-Allocation-Fail"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = var.nat_alert["enabled"]
+  alert_strategy {
+    auto_close = "86400s"
+  }
   conditions {
     display_name = "Cloud NAT Gateway - NAT allocation failed"
     condition_threshold {
@@ -249,6 +270,9 @@ resource "google_monitoring_alert_policy" "nat_port_exhaust" {
   display_name = "RS-Base-NAT-Port-Exhaust"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = var.nat_alert["enabled"]
+  alert_strategy {
+    auto_close = "86400s"
+  }
   conditions {
     display_name = "Cloud NAT Gateway - Allocated ports"
     condition_threshold {
@@ -283,6 +307,9 @@ resource "google_monitoring_alert_policy" "csql_memory_utilization" {
   display_name = "RS-Base-MEM-CSQL"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = var.sql_alert["enabled"]
+  alert_strategy {
+    auto_close = "86400s"
+  }
   conditions {
     display_name = "Cloud SQL Database - Memory utilization"
     condition_threshold {
@@ -317,6 +344,9 @@ resource "google_monitoring_alert_policy" "csql_cpu_utilization" {
   display_name = "RS-Base-CPU-CSQL"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = var.sql_alert["enabled"]
+  alert_strategy {
+    auto_close = "86400s"
+  }
   conditions {
     display_name = "Cloud SQL Database - CPU utilization"
     condition_threshold {
