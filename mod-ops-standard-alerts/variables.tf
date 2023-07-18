@@ -9,7 +9,6 @@ variable "watchman_token" {
 variable "runbook" {
   description = "Link to Customer Runbook"
   type        = string
-  default     = {}
 }
 
 variable "enabled" {
