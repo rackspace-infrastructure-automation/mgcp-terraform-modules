@@ -8,7 +8,7 @@ variable "watchman_token" {
 
 variable "runbook" {
   description = "Link to Customer Runbook"
-  type        = map(string)
+  type        = string
   default     = {}
 }
 
