@@ -10,8 +10,6 @@ resource "google_monitoring_alert_policy" "cpu_usage" {
     condition_threshold {
       filter     = <<EOT
               metric.type="compute.googleapis.com/instance/cpu/utilization" AND
-              metadata.user_labels.autoscaled="false" AND
-              metadata.user_labels.monitored ="true" AND
               resource.type="gce_instance"
       EOT
       duration   = "300s"
@@ -44,8 +42,6 @@ resource "google_monitoring_alert_policy" "memory_usage" {
       filter     = <<EOT
               metric.label.state="used" AND
               metric.type="agent.googleapis.com/memory/percent_used" AND
-              metadata.user_labels.autoscaled="false" AND
-              metadata.user_labels.monitored ="true" AND
               resource.type="gce_instance"
       EOT
       duration   = "900s"
@@ -77,8 +73,6 @@ resource "google_monitoring_alert_policy" "uptime_check" {
     condition_threshold {
       filter     = <<EOT
               metric.type="compute.googleapis.com/instance/uptime" AND
-              metadata.user_labels.autoscaled="false" AND
-              metadata.user_labels.monitored ="true" AND
               resource.type="gce_instance"
       EOT
       duration   = "900s"
@@ -110,7 +104,7 @@ resource "google_monitoring_alert_policy" "disk_usage" {
     condition_threshold {
       filter     = <<EOT
               metric.type="agent.googleapis.com/disk/percent_used" AND
-              metadata.user_labels.autoscaled="false" AND
+
               resource.type="gce_instance" AND
               metric.label.device!=monitoring.regex.full_match(".*(loop[0-9]|tmpfs|udev|sda15).*") AND
               metric.label.state="free"
