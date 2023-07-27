@@ -3,7 +3,7 @@ resource "google_monitoring_notification_channel" "primary_email" {
   description  = "Primary email contact"
   type         = "email"
   labels = {
-    email = var.primary_email
+    email_address = var.primary_email
   }
   enabled = var.enabled
 }
