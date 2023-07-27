@@ -104,7 +104,6 @@ resource "google_monitoring_alert_policy" "disk_usage" {
     condition_threshold {
       filter     = <<EOT
               metric.type="agent.googleapis.com/disk/percent_used" AND
-
               resource.type="gce_instance" AND
               metric.label.device!=monitoring.regex.full_match(".*(loop[0-9]|tmpfs|udev|sda15).*") AND
               metric.label.state="free"
