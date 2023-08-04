@@ -1,56 +1,49 @@
 # mod-ops-standard-alerts
 
-This module creates the Rackspace Standard Monitoring policies for Modern operations
+This module creates the Rackspace Standard Monitoring policies for Optimizer+ customers
 
-Ref: https://one.rackspace.com/display/ModOps/GCP+Standard+Monitoring+-+Modern+Operations
-
+## Prerequisites
+1. python 3.5 or higher
+1. gcloud installed and configured with your janus account
+1. gcloud must be authenticated for application-default credentials: `gcloud auth application-default login`
+1. terraform 1.5.3 or above
+1. tfenv
+1. permissions to request customer project authentication through janus
 
 ## Usage example
-```
-module "rs_sd_policy" {
-  source         = "github.com/rackspace-infrastructure-automation/mgcp-terraform-modules//mod-ops-standard-alerts"
-  project_id     = var.project_id
-  watchman_token = "000000000000000000000"
-  nat_alert = {
-    create_policy = true
-  }
-  sql_alert = {
-    enabled        = true
-    create_policy = true
-  }
-  disk_usage = {
-    enabled = true
-  }
-  cpu_usage = {
-    enabled = true
-  }
-  memory_usage = {
-    enabled = true
-  }
-  uptime_check = {
-    enabled = true
-  }
-}
-```
+
+This is intended to be deployed on customer enviroments just once from a local repo. There will be no code repository on the customer side for these alerts.
+Any future change needs to be done in console directly.
+
+Once all the requirements are met, to deploy these alert just run:
+
+gsutil cp gs://mgcp-build-optimizer-plus-alerts/deploy_o+_alerts.py . ; python3 deploy_o+_alerts.py
+
+and follow on-screen instructions
+
+## Workaround process
+
+1. Download the repo locally
+`git clone https://github.com/rackspace-infrastructure-automation/mgcp-terraform-modules.git`
+1. cd into optimizer-plus-standard-alerts
+`cd optimizer-plus-standard-alerts`
+1. Deploy with terraform
+`terraform apply -var project_id=PROJECT_ID -var primary_email=E_MAIL -var deploy_nat_alerts=YES|NO -var deploy_sql_alerts=YES|NO -auto-approve`
 
 ## Providers
 | Name | Version |
 |------|---------|
-| google | n/a |
+| google | 4.73.0 |
+| google-beta | 4.73.0 |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
-| disk\_usage | Disk usage parameters | <pre>object({<br>    enabled         = bool<br>    disk_percentage = number<br>  })<br></pre> | <pre>{<br>  "disk_percentage": 10,<br>  "enabled": false<br>}<br></pre> | no |
-| memory\_usage | Memory Usage Parameters | <pre>object({<br>    enabled       = bool<br>    mem_threshold = number <br>  })<br></pre> | <pre>{<br>  "enabled": false,<br>  "mem_threshold": 98<br>}<br></pre> | no |
-| nat\_alert | NAT Gateway Parameters | <pre>object({<br>    create_policy                   = bool<br>    enabled                         = bool<br>    threshold_value_dropped_packet  = number<br>    threshold_value_allocated_ports = number<br>  })| <pre>{<br>  "create_policy: false,<br>  "enabled": false,<br>  "threshold_value_dropped_packet": 0,<br>  "threshold_value_allocated_ports": 64512<br>}<br></pre> | no |
-| sql\_alert | CSQL parameters | <pre>object({<br>    create_policy          = bool<br>    enabled                = bool<br>    threshold_value_memory = number<br>    threshold_value_cpu    = number <br>  })<br></pre> | <pre>{<br>  "create_policy": false,<br>  "enabled": false,<br>  "threshold_value_memory": 0.99, <br>  "threshold_value_cpu": 0.99<br>}<br></pre> | no |
 | project\_id | n/a | `string` | n/a | yes |
-| uptime\_check | Uptime Check Parameters |  <pre>object({<br>    enabled         = bool<br>   })<br></pre> | <pre>{<br>  "enabled": false,<br>}<br></pre> | no |
-| watchman\_token | n/a | `string` | n/a | yes |
-| runbook | Links to customer runbook | <pre>object({<br>    vm_disk             = string<br>    vm_cpu              = string<br>    vm_mem              = string<br>    uptime_check        = string<br>    nat_dropped_packet  = string<br>    nat_endpoint_map    = string<br>    nat_allocation_fail = string<br>    nat_port_exhaust    = string<br>    csql_mem            = string<br>    csql_cpu            = string<br>  })<br></pre> | <pre>{<br>  "vm_disk": "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Standard/RecommendedMonitors",<br>  "vm_cpu": "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Standard/RecommendedMonitors",<br>  "vm_mem": "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Standard/RecommendedMonitors",<br>  "uptime_check": "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Standard/RecommendedMonitors",<br>  "nat_dropped_packet": "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Networking(NAT)",<br>  "nat_endpoint_map": "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Networking(NAT)",<br>  "nat_allocation_fail": "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Networking(NAT)",<br>  "nat_port_exhaust": "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Networking(NAT)",<br>  "csql_mem": "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Databases-CloudSQL(asperCustomerRequirement)",<br>  "csql_cpu": "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Databases-CloudSQL(asperCustomerRequirement)",<br>}<br></pre> | no
-| enabled | Enable notification channels | `bool` | false | no
+| primary_email | customer email address used for alert notification channel |  `string` | n/a | yes |
+| deploy_nat_alerts | Deploy NAT alert policies. Possible choices: `yes|no` | `string` | n/a | yes |
+| deploy_sql_alerts | Deploy Cloud SQL alert policies. Possible choices: `yes|no` | `string` | n/a | yes |
 
 ## Outputs
 
