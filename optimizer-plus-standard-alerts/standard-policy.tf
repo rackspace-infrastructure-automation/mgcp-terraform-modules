@@ -10,8 +10,6 @@ resource "google_monitoring_alert_policy" "cpu_usage" {
     condition_threshold {
       filter     = <<EOT
               metric.type="compute.googleapis.com/instance/cpu/utilization" AND
-              metadata.user_labels.autoscaled="false" AND
-              metadata.user_labels.monitored ="true" AND
               resource.type="gce_instance"
       EOT
       duration   = "300s"
@@ -28,11 +26,7 @@ resource "google_monitoring_alert_policy" "cpu_usage" {
       }
     }
   }
-  documentation {
-    mime_type = "text/markdown"
-    content   = lookup(var.runbook, "vm_cpu", var.default_runbook["vm_cpu"])
-  }
-  notification_channels = [google_monitoring_notification_channel.rackspace_high.name]
+  notification_channels = [google_monitoring_notification_channel.primary_email.name]
 }
 
 resource "google_monitoring_alert_policy" "memory_usage" {
@@ -48,8 +42,6 @@ resource "google_monitoring_alert_policy" "memory_usage" {
       filter     = <<EOT
               metric.label.state="used" AND
               metric.type="agent.googleapis.com/memory/percent_used" AND
-              metadata.user_labels.autoscaled="false" AND
-              metadata.user_labels.monitored ="true" AND
               resource.type="gce_instance"
       EOT
       duration   = "900s"
@@ -66,11 +58,7 @@ resource "google_monitoring_alert_policy" "memory_usage" {
       }
     }
   }
-  documentation {
-    mime_type = "text/markdown"
-    content   = lookup(var.runbook, "vm_mem", var.default_runbook["vm_mem"])
-  }
-  notification_channels = [google_monitoring_notification_channel.rackspace_urgent.name]
+  notification_channels = [google_monitoring_notification_channel.primary_email.name]
 }
 
 resource "google_monitoring_alert_policy" "uptime_check" {
@@ -85,8 +73,6 @@ resource "google_monitoring_alert_policy" "uptime_check" {
     condition_threshold {
       filter     = <<EOT
               metric.type="compute.googleapis.com/instance/uptime" AND
-              metadata.user_labels.autoscaled="false" AND
-              metadata.user_labels.monitored ="true" AND
               resource.type="gce_instance"
       EOT
       duration   = "900s"
@@ -103,11 +89,7 @@ resource "google_monitoring_alert_policy" "uptime_check" {
       }
     }
   }
-  documentation {
-    mime_type = "text/markdown"
-    content   = lookup(var.runbook, "uptime_check", var.default_runbook["uptime_check"])
-  }
-  notification_channels = [google_monitoring_notification_channel.rackspace_emergency.name]
+  notification_channels = [google_monitoring_notification_channel.primary_email.name]
 }
 
 resource "google_monitoring_alert_policy" "disk_usage" {
@@ -122,8 +104,6 @@ resource "google_monitoring_alert_policy" "disk_usage" {
     condition_threshold {
       filter     = <<EOT
               metric.type="agent.googleapis.com/disk/percent_used" AND
-              metadata.user_labels.autoscaled="false" AND
-              metadata.user_labels.monitored ="true" AND
               resource.type="gce_instance" AND
               metric.label.device!=monitoring.regex.full_match(".*(loop[0-9]|tmpfs|udev|sda15).*") AND
               metric.label.state="free"
@@ -143,18 +123,13 @@ resource "google_monitoring_alert_policy" "disk_usage" {
       }
     }
   }
-  documentation {
-    mime_type = "text/markdown"
-    content   = lookup(var.runbook, "vm_disk", var.default_runbook["vm_disk"])
-  }
-
-  notification_channels = [google_monitoring_notification_channel.rackspace_urgent.name]
+  notification_channels = [google_monitoring_notification_channel.primary_email.name]
 }
 
 
 
 resource "google_monitoring_alert_policy" "nat_dropped_packet_out_of_resource" {
-  count        = var.nat_alert["create_policy"] == true ? 1 : 0
+  count        = var.deploy_nat_alerts == "yes" ? 1 : 0
   display_name = "RS-Base-NAT-Dropped-Packet-Out-Of-Resource"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = var.nat_alert["enabled"]
@@ -183,16 +158,11 @@ resource "google_monitoring_alert_policy" "nat_dropped_packet_out_of_resource" {
       }
     }
   }
-  documentation {
-    mime_type = "text/markdown"
-    content   = lookup(var.runbook, "nat_dropped_packet", var.default_runbook["nat_dropped_packet"])
-  }
-
-  notification_channels = [google_monitoring_notification_channel.rackspace_urgent.name]
+  notification_channels = [google_monitoring_notification_channel.primary_email.name]
 }
 
 resource "google_monitoring_alert_policy" "nat_dropped_packet_endpoint_map" {
-  count        = var.nat_alert["create_policy"] == true ? 1 : 0
+  count        = var.deploy_nat_alerts == "yes" ? 1 : 0
   display_name = "RS-Base-NAT-Dropped-Packet-Endpoint-Map"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = var.nat_alert["enabled"]
@@ -221,16 +191,11 @@ resource "google_monitoring_alert_policy" "nat_dropped_packet_endpoint_map" {
       }
     }
   }
-  documentation {
-    mime_type = "text/markdown"
-    content   = lookup(var.runbook, "nat_endpoint_map", var.default_runbook["nat_endpoint_map"])
-  }
-
-  notification_channels = [google_monitoring_notification_channel.rackspace_urgent.name]
+  notification_channels = [google_monitoring_notification_channel.primary_email.name]
 }
 
 resource "google_monitoring_alert_policy" "nat_allocation_fail" {
-  count        = var.nat_alert["create_policy"] == true ? 1 : 0
+  count        = var.deploy_nat_alerts == "yes" ? 1 : 0
   display_name = "RS-Base-NAT-Allocation-Fail"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = var.nat_alert["enabled"]
@@ -258,16 +223,11 @@ resource "google_monitoring_alert_policy" "nat_allocation_fail" {
       }
     }
   }
-  documentation {
-    mime_type = "text/markdown"
-    content   = lookup(var.runbook, "nat_allocation_fail", var.default_runbook["nat_allocation_fail"])
-  }
-
-  notification_channels = [google_monitoring_notification_channel.rackspace_urgent.name]
+  notification_channels = [google_monitoring_notification_channel.primary_email.name]
 }
 
 resource "google_monitoring_alert_policy" "nat_port_exhaust" {
-  count        = var.nat_alert["create_policy"] == true ? 1 : 0
+  count        = var.deploy_nat_alerts == "yes" ? 1 : 0
   display_name = "RS-Base-NAT-Port-Exhaust"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = var.nat_alert["enabled"]
@@ -295,16 +255,11 @@ resource "google_monitoring_alert_policy" "nat_port_exhaust" {
       }
     }
   }
-  documentation {
-    mime_type = "text/markdown"
-    content   = lookup(var.runbook, "nat_port_exhaust", var.default_runbook["nat_port_exhaust"])
-  }
-
-  notification_channels = [google_monitoring_notification_channel.rackspace_urgent.name]
+  notification_channels = [google_monitoring_notification_channel.primary_email.name]
 }
 
 resource "google_monitoring_alert_policy" "csql_memory_utilization" {
-  count        = var.sql_alert["create_policy"] == true ? 1 : 0
+  count        = var.deploy_sql_alerts == "yes" ? 1 : 0
   display_name = "RS-Base-MEM-CSQL"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = var.sql_alert["enabled"]
@@ -332,16 +287,11 @@ resource "google_monitoring_alert_policy" "csql_memory_utilization" {
       }
     }
   }
-  documentation {
-    mime_type = "text/markdown"
-    content   = lookup(var.runbook, "csql_mem", var.default_runbook["csql_mem"])
-  }
-
-  notification_channels = [google_monitoring_notification_channel.rackspace_urgent.name]
+  notification_channels = [google_monitoring_notification_channel.primary_email.name]
 }
 
 resource "google_monitoring_alert_policy" "csql_cpu_utilization" {
-  count        = var.sql_alert["create_policy"] == true ? 1 : 0
+  count        = var.deploy_sql_alerts == "yes" ? 1 : 0
   display_name = "RS-Base-CPU-CSQL"
   combiner     = "AND_WITH_MATCHING_RESOURCE"
   enabled      = var.sql_alert["enabled"]
@@ -369,11 +319,6 @@ resource "google_monitoring_alert_policy" "csql_cpu_utilization" {
       }
     }
   }
-  documentation {
-    mime_type = "text/markdown"
-    content   = lookup(var.runbook, "csql_cpu", var.default_runbook["csql_cpu"])
-  }
-
-  notification_channels = [google_monitoring_notification_channel.rackspace_urgent.name]
+  notification_channels = [google_monitoring_notification_channel.primary_email.name]
 }
 
