@@ -1,7 +1,7 @@
 resource "google_monitoring_alert_policy" "uptime_check" {
   display_name = "RS-Base-GCE-Uptime-Check"
   combiner     = "OR"
-  enabled      = var.uptime_check["enabled"]
+  enabled      = true
   alert_strategy {
     auto_close = "86400s"
   }
@@ -30,14 +30,14 @@ resource "google_monitoring_alert_policy" "uptime_check" {
 }
 
 resource "google_monitoring_uptime_check_config" "url_monitors" {
-  for_each = toset(split("//", replace(each.key,".","-"))[0])
-  display_name = concat(split("//", replace(each.key,".","-"))[0], "-url-monitor")
+  for_each = toset(var.url_list)
+  display_name = "${split("//",replace(each.value,".","-"))[1]}-url-monitor"
   timeout      = "10s"
   period = "60s"
 
   http_check {
     path         = "/"
-    port         =  substring(each.key, 0, 5) == "https" ? "443" : "80"
+    port         =  startswith(each.key, "https") == true ? "443" : "80"
     use_ssl      = true
     validate_ssl = true
   }
@@ -45,8 +45,39 @@ resource "google_monitoring_uptime_check_config" "url_monitors" {
   monitored_resource {
     type = "uptime_url"
     labels = {
-      host       = each.key
+      host       = split("//", each.key)[1]
     }
   }
 
+}
+
+resource "google_monitoring_alert_policy" "url_uptime_check" {
+  display_name = "RS - Uptime Check URL - Check passed"
+  combiner     = "OR"
+  enabled      = true
+  alert_strategy {
+    auto_close = "1800s"
+  }
+  conditions {
+    display_name = "Uptime check for GCE INSTANCE - Platform"
+    condition_threshold {
+      filter     = <<EOT
+              resource.type="uptime_url" AND
+              metric.type="monitoring.googleapis.com/uptime_check/check_passed"
+      EOT
+      duration   = "0s"
+      comparison = "COMPARISON_LT"
+      aggregations {
+        alignment_period     = "60s"
+        per_series_aligner   = "ALIGN_FRACTION_TRUE"
+        cross_series_reducer = "REDUCE_MEAN"
+        group_by_fields      = ["project", "resource.label.host"]
+      }
+      threshold_value = 0.5
+      trigger {
+        count = 1
+      }
+    }
+  }
+  notification_channels = [google_monitoring_notification_channel.rackspace_normal.name]
 }
