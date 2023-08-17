@@ -31,12 +31,12 @@ resource "google_monitoring_alert_policy" "uptime_check" {
 
 resource "google_monitoring_uptime_check_config" "url_monitors" {
   for_each = toset(var.url_list)
-  display_name = "${split("//",replace(each.value,".","-"))[1]}-url-monitor"
+  display_name = "${split("/", split("//", replace(each.value,".","-"))[1])[0]}-url-monitor" #https://www.rackspace.com/index.html -> www-rackspace-com-url-monitor
   timeout      = "10s"
   period = "60s"
 
   http_check {
-    path         = trim(each.key, split("/" ,split("//", each.key)[1])[0]) == "" ? "/" : trim(each.key, split("/" ,split("//", each.key)[1])[0])
+    path         = replace(replace(each.key, "${split("//", each.key)[0]}//", ""), split("/", split("//", each.key)[1])[0], "") #https://www.rackspace.com/index.html -> /index.html
     port         = startswith(each.key, "https") == true ? "443" : "80"
     use_ssl      = true
     validate_ssl = true
@@ -45,10 +45,9 @@ resource "google_monitoring_uptime_check_config" "url_monitors" {
   monitored_resource {
     type = "uptime_url"
     labels = {
-      host       = split("/" ,split("//", each.key)[1])[0]
+      host       = split("/", split("//", each.key)[1])[0] #https://www.rackspace.com/index.html -> www.rackspace.com
     }
   }
-
 }
 
 resource "google_monitoring_alert_policy" "url_uptime_check" {
