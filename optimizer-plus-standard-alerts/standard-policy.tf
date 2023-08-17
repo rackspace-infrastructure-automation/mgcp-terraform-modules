@@ -36,8 +36,8 @@ resource "google_monitoring_uptime_check_config" "url_monitors" {
   period = "60s"
 
   http_check {
-    path         = "/"
-    port         =  startswith(each.key, "https") == true ? "443" : "80"
+    path         = trim(each.key, split("/" ,split("//", each.key)[1])[0]) == "" ? "/" : trim(each.key, split("/" ,split("//", each.key)[1])[0])
+    port         = startswith(each.key, "https") == true ? "443" : "80"
     use_ssl      = true
     validate_ssl = true
   }
@@ -45,7 +45,7 @@ resource "google_monitoring_uptime_check_config" "url_monitors" {
   monitored_resource {
     type = "uptime_url"
     labels = {
-      host       = split("//", each.key)[1]
+      host       = split("/" ,split("//", each.key)[1])[0]
     }
   }
 
