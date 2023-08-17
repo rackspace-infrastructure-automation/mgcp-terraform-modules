@@ -1,7 +1,7 @@
 resource "google_monitoring_alert_policy" "uptime_check" {
   display_name = "RS-Base-GCE-Uptime-Check"
   combiner     = "OR"
-  enabled      = true
+  enabled      = false
   alert_strategy {
     auto_close = "86400s"
   }
@@ -34,6 +34,8 @@ resource "google_monitoring_uptime_check_config" "url_monitors" {
   display_name = "${split("//",replace(each.value,".","-"))[1]}-url-monitor"
   timeout      = "10s"
   period = "60s"
+  enabled      = false
+
 
   http_check {
     path         = trim(each.key, split("/" ,split("//", each.key)[1])[0]) == "" ? "/" : trim(each.key, split("/" ,split("//", each.key)[1])[0])
