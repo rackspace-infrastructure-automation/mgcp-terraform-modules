@@ -38,8 +38,8 @@ resource "google_monitoring_uptime_check_config" "url_monitors" {
   http_check {
     path         = replace(replace(each.key, "${split("//", each.key)[0]}//", ""), split("/", split("//", each.key)[1])[0], "") #https://www.rackspace.com/index.html -> /index.html
     port         = startswith(each.key, "https") == true ? "443" : "80"
-    use_ssl      = true
-    validate_ssl = true
+    use_ssl      = startswith(each.key, "https") == true ? true : false
+    validate_ssl = startswith(each.key, "https") == true ? true : false
   }
 
   monitored_resource {
