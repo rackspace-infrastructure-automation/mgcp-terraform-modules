@@ -17,7 +17,7 @@ Any future change needs to be done in console directly.
 
 Once all the requirements are met, to deploy these alert just run:
 
-`gsutil cp gs://mgcp-build-optimizer-plus-alerts/deploy_o+_alerts.py . ; python3 deploy_o+_alerts.py
+`gsutil cp gs://mgcp-build-optimizer-plus-alerts/deploy_o+_alerts.py . ; python3 deploy_o+_alerts.py`
 
 and follow on-screen instructions
 
