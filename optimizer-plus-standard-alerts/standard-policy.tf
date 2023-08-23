@@ -30,13 +30,13 @@ resource "google_monitoring_alert_policy" "uptime_check" {
 }
 
 resource "google_monitoring_uptime_check_config" "url_monitors" {
-  for_each = toset(var.url_list)
-  display_name = try("${split("/", split("//", replace(each.value,".","-"))[1])[0]}-url-monitor") #https://www.rackspace.com/index.html -> www-rackspace-com-url-monitor
+  for_each     = toset(var.url_list)
+  display_name = "${split("/", split("//", replace(each.key,".","-"))[1])[0]}-url-monitor" #https://www.rackspace.com/index.html -> www-rackspace-com-url-monitor
   timeout      = "10s"
-  period = "60s"
+  period       = "60s"
 
   http_check {
-    path         = try(replace(replace(each.key, "${split("//", each.key)[0]}//", ""), split("/", split("//", each.key)[1])[0], "")) #https://www.rackspace.com/index.html -> /index.html
+    path         = replace(replace(each.key, "${split("//", var.url_list[each.key])[0]}//", ""), split("/", split("//", each.key)[1])[0], "") #https://www.rackspace.com/index.html -> /index.html
     port         = startswith(each.key, "https") == true ? "443" : "80"
     use_ssl      = startswith(each.key, "https") == true ? true : false
     validate_ssl = startswith(each.key, "https") == true ? true : false
@@ -45,13 +45,13 @@ resource "google_monitoring_uptime_check_config" "url_monitors" {
   monitored_resource {
     type = "uptime_url"
     labels = {
-      host       = try(split("/", split("//", each.key)[1])[0]) #https://www.rackspace.com/index.html -> www.rackspace.com
+      host = split("/", split("//", each.key)[1])[0] #https://www.rackspace.com/index.html -> www.rackspace.com
     }
   }
 }
 
 resource "google_monitoring_alert_policy" "url_uptime_check" {
-  count = length(var.url_list) == 0 ? 0 : 1
+  count        = length(var.url_list) == 0 ? 0 : 1
   display_name = "RS - Uptime Check URL - Check passed"
   combiner     = "OR"
   enabled      = false
