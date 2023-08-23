@@ -28,7 +28,8 @@ and follow on-screen instructions
 1. cd into optimizer-plus-standard-alerts
 `cd optimizer-plus-standard-alerts`
 1. Deploy with terraform
-`terraform apply -var project_id=PROJECT_ID -var url_listl='["URL1", "URL2", "URL3"]' -var watchman_token="WATCHMAN_TOKEN_SECRET"  -auto-approve`
+`terraform apply -var project_id=PROJECT_ID -var url_list='["URL1", "URL2", "URL3"]' -var watchman_token="WATCHMAN_TOKEN_SECRET"  -auto-approve`
+if URL list is empty please use url_list='[]'
 
 ## Providers
 | Name | Version |
