@@ -51,6 +51,7 @@ resource "google_monitoring_uptime_check_config" "url_monitors" {
 }
 
 resource "google_monitoring_alert_policy" "url_uptime_check" {
+  count = length(var.url_list) == 0 ? 0 : 1
   display_name = "RS - Uptime Check URL - Check passed"
   combiner     = "OR"
   enabled      = false
