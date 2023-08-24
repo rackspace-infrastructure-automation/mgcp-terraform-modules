@@ -29,7 +29,7 @@ and follow on-screen instructions
 `cd optimizer-plus-standard-alerts`
 1. Deploy with terraform
 `terraform apply -var project_id=PROJECT_ID -var url_list='["URL1", "URL2", "URL3"]' -var watchman_token="WATCHMAN_TOKEN_SECRET"  -auto-approve`
-if URL list is empty please use url_list='[]'
+URL must be in "http://" or "https://" format; Example: "https://www.rackspace.com" or "https://www.rackspace.com/status.html". If URL list is empty please use url_list='[]'
 
 ## Providers
 | Name | Version |
