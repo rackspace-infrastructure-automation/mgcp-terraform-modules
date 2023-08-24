@@ -17,7 +17,7 @@ Any future change needs to be done in console directly.
 
 Once all the requirements are met, to deploy these alert just run:
 
-gsutil cp gs://mgcp-build-optimizer-plus-alerts/deploy_o+_alerts.py . ; python3 deploy_o+_alerts.py
+`gsutil cp gs://mgcp-build-optimizer-plus-alerts/deploy_o+_alerts.py . ; python3 deploy_o+_alerts.py`
 
 and follow on-screen instructions
 
@@ -28,7 +28,8 @@ and follow on-screen instructions
 1. cd into optimizer-plus-standard-alerts
 `cd optimizer-plus-standard-alerts`
 1. Deploy with terraform
-`terraform apply -var project_id=PROJECT_ID -var primary_email=E_MAIL -var deploy_nat_alerts=YES|NO -var deploy_sql_alerts=YES|NO -auto-approve`
+`terraform apply -var project_id=PROJECT_ID -var url_list='["URL1", "URL2", "URL3"]' -var watchman_token="WATCHMAN_TOKEN_SECRET"  -auto-approve`
+URL must be in "http://" or "https://" format; Example: "https://www.rackspace.com" or "https://www.rackspace.com/status.html". If URL list is empty please use url_list='[]'
 
 ## Providers
 | Name | Version |
@@ -41,9 +42,8 @@ and follow on-screen instructions
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
 | project\_id | n/a | `string` | n/a | yes |
-| primary_email | customer email address used for alert notification channel |  `string` | n/a | yes |
-| deploy_nat_alerts | Deploy NAT alert policies. Possible choices: `yes|no` | `string` | n/a | yes |
-| deploy_sql_alerts | Deploy Cloud SQL alert policies. Possible choices: `yes|no` | `string` | n/a | yes |
+| url_list | List of URLs to be monitored |  `list(string)` | n/a | yes |
+| watchman_token | Watchman token secret, this can be retrived following this guide: https://one.rackspace.com/display/manpubcld/GCP+-+Creating+Watchman+Notification+channels | `string` | n/a | yes |
 
 ## Outputs
 

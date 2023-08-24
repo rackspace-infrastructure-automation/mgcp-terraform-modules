@@ -1,70 +1,7 @@
-resource "google_monitoring_alert_policy" "cpu_usage" {
-  display_name = "RS-Base-GCE-CPU-Utilization"
-  combiner     = "AND"
-  enabled      = var.cpu_usage["enabled"]
-  alert_strategy {
-    auto_close = "86400s"
-  }
-  conditions {
-    display_name = "Metric Threshold on All Instance (GCE)s"
-    condition_threshold {
-      filter     = <<EOT
-              metric.type="compute.googleapis.com/instance/cpu/utilization" AND
-              resource.type="gce_instance"
-      EOT
-      duration   = "300s"
-      comparison = "COMPARISON_GT"
-      aggregations {
-        alignment_period     = "900s"
-        per_series_aligner   = "ALIGN_MEAN"
-        cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["project", "metadata.system_labels.name", "resource.label.zone"]
-      }
-      threshold_value = var.cpu_usage["cpu_threshold"]
-      trigger {
-        count = 1
-      }
-    }
-  }
-  notification_channels = [google_monitoring_notification_channel.primary_email.name]
-}
-
-resource "google_monitoring_alert_policy" "memory_usage" {
-  display_name = "RS-Base-GCE-Memory-Utilization"
-  combiner     = "AND"
-  enabled      = var.memory_usage["enabled"]
-  alert_strategy {
-    auto_close = "86400s"
-  }
-  conditions {
-    display_name = "Metric Threshold on All Instance (GCE)s"
-    condition_threshold {
-      filter     = <<EOT
-              metric.label.state="used" AND
-              metric.type="agent.googleapis.com/memory/percent_used" AND
-              resource.type="gce_instance"
-      EOT
-      duration   = "900s"
-      comparison = "COMPARISON_GT"
-      aggregations {
-        alignment_period     = "60s"
-        per_series_aligner   = "ALIGN_MEAN"
-        cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["project", "metadata.system_labels.name", "resource.label.instance_id", "resource.label.zone"]
-      }
-      threshold_value = var.memory_usage["mem_threshold"]
-      trigger {
-        count = 1
-      }
-    }
-  }
-  notification_channels = [google_monitoring_notification_channel.primary_email.name]
-}
-
 resource "google_monitoring_alert_policy" "uptime_check" {
   display_name = "RS-Base-GCE-Uptime-Check"
   combiner     = "OR"
-  enabled      = var.uptime_check["enabled"]
+  enabled      = false
   alert_strategy {
     auto_close = "86400s"
   }
@@ -89,236 +26,58 @@ resource "google_monitoring_alert_policy" "uptime_check" {
       }
     }
   }
-  notification_channels = [google_monitoring_notification_channel.primary_email.name]
+  notification_channels = [google_monitoring_notification_channel.rackspace_normal.name]
 }
 
-resource "google_monitoring_alert_policy" "disk_usage" {
-  display_name = "RS-Base-GCE-Disk-Utilization"
-  combiner     = "AND_WITH_MATCHING_RESOURCE"
-  enabled      = var.disk_usage["enabled"]
+resource "google_monitoring_uptime_check_config" "url_monitors" {
+  for_each     = toset(var.url_list)
+  display_name = "${split("/", split("//", replace(each.key,".","-"))[1])[0]}-url-monitor" #https://www.rackspace.com/index.html -> www-rackspace-com-url-monitor
+  timeout      = "10s"
+  period       = "60s"
+
+  http_check {
+    path         = replace(replace(each.key, "${split("//", var.url_list[each.key])[0]}//", ""), split("/", split("//", each.key)[1])[0], "") #https://www.rackspace.com/index.html -> /index.html
+    port         = startswith(each.key, "https") == true ? "443" : "80"
+    use_ssl      = startswith(each.key, "https") == true ? true : false
+    validate_ssl = startswith(each.key, "https") == true ? true : false
+  }
+
+  monitored_resource {
+    type = "uptime_url"
+    labels = {
+      host = split("/", split("//", each.key)[1])[0] #https://www.rackspace.com/index.html -> www.rackspace.com
+    }
+  }
+}
+
+resource "google_monitoring_alert_policy" "url_uptime_check" {
+  count        = length(var.url_list) == 0 ? 0 : 1
+  display_name = "RS - Uptime Check URL - Check passed"
+  combiner     = "OR"
+  enabled      = false
   alert_strategy {
-    auto_close = "86400s"
+    auto_close = "1800s"
   }
   conditions {
-    display_name = "Metric Threshold on All Instance (GCE)s"
+    display_name = "Uptime check for GCE INSTANCE - Platform"
     condition_threshold {
       filter     = <<EOT
-              metric.type="agent.googleapis.com/disk/percent_used" AND
-              resource.type="gce_instance" AND
-              metric.label.device!=monitoring.regex.full_match(".*(loop[0-9]|tmpfs|udev|sda15).*") AND
-              metric.label.state="free"
-
+              resource.type="uptime_url" AND
+              metric.type="monitoring.googleapis.com/uptime_check/check_passed"
       EOT
-      duration   = "60s"
+      duration   = "0s"
       comparison = "COMPARISON_LT"
       aggregations {
         alignment_period     = "60s"
-        per_series_aligner   = "ALIGN_MEAN"
+        per_series_aligner   = "ALIGN_FRACTION_TRUE"
         cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["project", "metadata.system_labels.name", "metric.label.device", "resource.label.zone"]
+        group_by_fields      = ["project", "resource.label.host"]
       }
-      threshold_value = var.disk_usage["disk_percentage"]
+      threshold_value = 0.5
       trigger {
         count = 1
       }
     }
   }
-  notification_channels = [google_monitoring_notification_channel.primary_email.name]
+  notification_channels = [google_monitoring_notification_channel.rackspace_normal.name]
 }
-
-
-
-resource "google_monitoring_alert_policy" "nat_dropped_packet_out_of_resource" {
-  count        = var.deploy_nat_alerts == "yes" ? 1 : 0
-  display_name = "RS-Base-NAT-Dropped-Packet-Out-Of-Resource"
-  combiner     = "AND_WITH_MATCHING_RESOURCE"
-  enabled      = var.nat_alert["enabled"]
-  alert_strategy {
-    auto_close = "86400s"
-  }
-  conditions {
-    display_name = "Cloud NAT Gateway - Sent packets dropped count"
-    condition_threshold {
-      filter     = <<EOT
-              resource.type = "nat_gateway" AND
-              metric.type = "router.googleapis.com/nat/dropped_sent_packets_count" AND
-              metric.labels.reason = "OUT_OF_RESOURCES"
-      EOT
-      duration   = "0s"
-      comparison = "COMPARISON_GT"
-      aggregations {
-        alignment_period     = "60s"
-        per_series_aligner   = "ALIGN_MEAN"
-        cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["metric.label.ip_protocol", "metric.label.reason", "resource.label.project_id", "resource.label.router_id", "project"]
-      }
-      threshold_value = var.nat_alert["threshold_value_dropped_packet"]
-      trigger {
-        count = 1
-      }
-    }
-  }
-  notification_channels = [google_monitoring_notification_channel.primary_email.name]
-}
-
-resource "google_monitoring_alert_policy" "nat_dropped_packet_endpoint_map" {
-  count        = var.deploy_nat_alerts == "yes" ? 1 : 0
-  display_name = "RS-Base-NAT-Dropped-Packet-Endpoint-Map"
-  combiner     = "AND_WITH_MATCHING_RESOURCE"
-  enabled      = var.nat_alert["enabled"]
-  alert_strategy {
-    auto_close = "86400s"
-  }
-  conditions {
-    display_name = "Cloud NAT Gateway - Sent packets dropped count"
-    condition_threshold {
-      filter     = <<EOT
-              resource.type = "nat_gateway" AND
-              metric.type = "router.googleapis.com/nat/dropped_sent_packets_count" AND
-              metric.labels.reason = "ENDPOINT_INDEPENDENCE_CONFLICT"
-      EOT
-      duration   = "0s"
-      comparison = "COMPARISON_GT"
-      aggregations {
-        alignment_period     = "60s"
-        per_series_aligner   = "ALIGN_MEAN"
-        cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["metric.label.ip_protocol", "metric.label.reason", "resource.label.project_id", "resource.label.router_id", "project"]
-      }
-      threshold_value = var.nat_alert["threshold_value_dropped_packet"]
-      trigger {
-        count = 1
-      }
-    }
-  }
-  notification_channels = [google_monitoring_notification_channel.primary_email.name]
-}
-
-resource "google_monitoring_alert_policy" "nat_allocation_fail" {
-  count        = var.deploy_nat_alerts == "yes" ? 1 : 0
-  display_name = "RS-Base-NAT-Allocation-Fail"
-  combiner     = "AND_WITH_MATCHING_RESOURCE"
-  enabled      = var.nat_alert["enabled"]
-  alert_strategy {
-    auto_close = "86400s"
-  }
-  conditions {
-    display_name = "Cloud NAT Gateway - NAT allocation failed"
-    condition_threshold {
-      filter     = <<EOT
-              resource.type = "nat_gateway" AND
-              metric.type = "router.googleapis.com/nat/nat_allocation_failed"
-      EOT
-      duration   = "0s"
-      comparison = "COMPARISON_GT"
-      aggregations {
-        alignment_period     = "60s"
-        per_series_aligner   = "ALIGN_COUNT_TRUE"
-        cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["resource.label.project_id", "resource.label.region", "resource.label.router_id", "resource.label.gateway_name", ]
-      }
-      threshold_value = 1
-      trigger {
-        count = 1
-      }
-    }
-  }
-  notification_channels = [google_monitoring_notification_channel.primary_email.name]
-}
-
-resource "google_monitoring_alert_policy" "nat_port_exhaust" {
-  count        = var.deploy_nat_alerts == "yes" ? 1 : 0
-  display_name = "RS-Base-NAT-Port-Exhaust"
-  combiner     = "AND_WITH_MATCHING_RESOURCE"
-  enabled      = var.nat_alert["enabled"]
-  alert_strategy {
-    auto_close = "86400s"
-  }
-  conditions {
-    display_name = "Cloud NAT Gateway - Allocated ports"
-    condition_threshold {
-      filter     = <<EOT
-              resource.type = "nat_gateway" AND
-              metric.type = "router.googleapis.com/nat/allocated_ports"
-      EOT
-      duration   = "0s"
-      comparison = "COMPARISON_GT"
-      aggregations {
-        alignment_period     = "60s"
-        per_series_aligner   = "ALIGN_MEAN"
-        cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["metric.label.nat_ip", "resource.label.project_id", "resource.label.router_id", ]
-      }
-      threshold_value = var.nat_alert["threshold_value_allocated_ports"]
-      trigger {
-        count = 1
-      }
-    }
-  }
-  notification_channels = [google_monitoring_notification_channel.primary_email.name]
-}
-
-resource "google_monitoring_alert_policy" "csql_memory_utilization" {
-  count        = var.deploy_sql_alerts == "yes" ? 1 : 0
-  display_name = "RS-Base-MEM-CSQL"
-  combiner     = "AND_WITH_MATCHING_RESOURCE"
-  enabled      = var.sql_alert["enabled"]
-  alert_strategy {
-    auto_close = "86400s"
-  }
-  conditions {
-    display_name = "Cloud SQL Database - Memory utilization"
-    condition_threshold {
-      filter     = <<EOT
-              resource.type = "cloudsql_database" AND
-              metric.type = "cloudsql.googleapis.com/database/memory/utilization"
-      EOT
-      duration   = "600s"
-      comparison = "COMPARISON_GT"
-      aggregations {
-        alignment_period     = "900s"
-        per_series_aligner   = "ALIGN_MEAN"
-        cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["resource.label.project_id", "resource.label.database_id", "resource.label.region"]
-      }
-      threshold_value = var.sql_alert["threshold_value_memory"]
-      trigger {
-        count = 1
-      }
-    }
-  }
-  notification_channels = [google_monitoring_notification_channel.primary_email.name]
-}
-
-resource "google_monitoring_alert_policy" "csql_cpu_utilization" {
-  count        = var.deploy_sql_alerts == "yes" ? 1 : 0
-  display_name = "RS-Base-CPU-CSQL"
-  combiner     = "AND_WITH_MATCHING_RESOURCE"
-  enabled      = var.sql_alert["enabled"]
-  alert_strategy {
-    auto_close = "86400s"
-  }
-  conditions {
-    display_name = "Cloud SQL Database - CPU utilization"
-    condition_threshold {
-      filter     = <<EOT
-              resource.type = "cloudsql_database" AND
-              metric.type = "cloudsql.googleapis.com/database/cpu/utilization"
-      EOT
-      duration   = "600s"
-      comparison = "COMPARISON_GT"
-      aggregations {
-        alignment_period     = "900s"
-        per_series_aligner   = "ALIGN_MEAN"
-        cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["resource.label.project_id", "resource.label.database_id", "resource.label.region"]
-      }
-      threshold_value = var.sql_alert["threshold_value_cpu"]
-      trigger {
-        count = 1
-      }
-    }
-  }
-  notification_channels = [google_monitoring_notification_channel.primary_email.name]
-}
-
