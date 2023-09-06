@@ -81,3 +81,35 @@ resource "google_monitoring_alert_policy" "url_uptime_check" {
   }
   notification_channels = [google_monitoring_notification_channel.rackspace_normal.name]
 }
+
+resource "google_monitoring_alert_policy" "url_ssl_expiry_alert" {
+  count        = length(var.url_list) == 0 ? 0 : 1
+  display_name = "RS - SSL Expiry Alert"
+  combiner     = "OR"
+  enabled      = false
+  alert_strategy {
+    auto_close = "1800s"
+  }
+  conditions {
+    display_name = "Uptime Check URL - Time until SSL certificate expires"
+    condition_threshold {
+      filter     = <<EOT
+              resource.type = "uptime_url" AND
+              metric.type = "monitoring.googleapis.com/uptime_check/time_until_ssl_cert_expires"
+      EOT
+      duration   = "0s"
+      comparison = "COMPARISON_LT"
+      aggregations {
+        alignment_period     = "300s"
+        per_series_aligner   = "ALIGN_MEAN"
+        cross_series_reducer = "REDUCE_MIN"
+        group_by_fields      = ["project", "resource.label.host"]
+      }
+      threshold_value = 28
+      trigger {
+        count = 1
+      }
+    }
+  }
+  notification_channels = [google_monitoring_notification_channel.rackspace_normal.name]
+}
