@@ -17,7 +17,7 @@ Any future change needs to be done in console directly.
 
 Once all the requirements are met, to deploy these alert just run:
 
-`gsutil cp gs://mgcp-build-optimizer-plus-alerts/deploy_o+_alerts.py . ; python3 deploy_o+_alerts.py`
+`gsutil cp gs://mgcp-service-provider-base-monitoring/sp_base_monitoring.py . ; python3 sp_base_monitoring.py`
 
 and follow on-screen instructions
 
@@ -25,8 +25,8 @@ and follow on-screen instructions
 
 1. Download the repo locally
 `git clone https://github.com/rackspace-infrastructure-automation/mgcp-terraform-modules.git`
-1. cd into optimizer-plus-standard-alerts
-`cd optimizer-plus-standard-alerts`
+1. cd into service-provider-base-monitoring
+`cd service-provider-base-monitoring`
 1. Deploy with terraform
 `terraform apply -var project_id=PROJECT_ID -var url_list='["URL1", "URL2", "URL3"]' -var watchman_token="WATCHMAN_TOKEN_SECRET"  -auto-approve`
 URL must be in "http://" or "https://" format; Example: "https://www.rackspace.com" or "https://www.rackspace.com/status.html". If URL list is empty please use url_list='[]'
