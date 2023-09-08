@@ -61,5 +61,5 @@ No output.
 
 ## CPU, Disk and MEM filter usage
 1. All filters must start with `AND`. Example: `"AND resource.labels.instance_id != \"755424311712857499\""`
-1. Make sure to add `AND` between one fileter and another. Example: `"AND resource.labels.instance_id != \"755424311712857499\" AND project = \"ops-leonardo-bertini\""`
+1. Make sure to add `AND` between one filter and another. Example: `"AND resource.labels.instance_id != \"755424311712857499\" AND project = \"ops-leonardo-bertini\""`
 1. Use `\"` to type double quotes within the string
