@@ -51,7 +51,15 @@ module "rs_sd_policy" {
 | watchman\_token | n/a | `string` | n/a | yes |
 | runbook | Links to customer runbook | <pre>object({<br>    vm_disk             = string<br>    vm_cpu              = string<br>    vm_mem              = string<br>    uptime_check        = string<br>    nat_dropped_packet  = string<br>    nat_endpoint_map    = string<br>    nat_allocation_fail = string<br>    nat_port_exhaust    = string<br>    csql_mem            = string<br>    csql_cpu            = string<br>  })<br></pre> | <pre>{<br>  "vm_disk": "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Standard/RecommendedMonitors",<br>  "vm_cpu": "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Standard/RecommendedMonitors",<br>  "vm_mem": "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Standard/RecommendedMonitors",<br>  "uptime_check": "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Standard/RecommendedMonitors",<br>  "nat_dropped_packet": "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Networking(NAT)",<br>  "nat_endpoint_map": "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Networking(NAT)",<br>  "nat_allocation_fail": "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Networking(NAT)",<br>  "nat_port_exhaust": "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Networking(NAT)",<br>  "csql_mem": "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Databases-CloudSQL(asperCustomerRequirement)",<br>  "csql_cpu": "https://one.rackspace.com/display/PCMS/GCP+Standard+Monitoring+-+Modern+Operations#GCPStandardMonitoring-ModernOperations-Databases-CloudSQL(asperCustomerRequirement)",<br>}<br></pre> | no
 | enabled | Enable notification channels | `bool` | false | no
+| disk_filters  | Allow the addition of extra filters for disk policy | `string` | "" | no |
+| cpu_filters  | Allow the addition of extra filters for cpu policy | `string` | "" | no |
+| mem_filters  | Allow the addition of extra filters for memory policy | `string` | "" | no |
 
 ## Outputs
 
 No output.
+
+## CPU, Disk and MEM filter usage
+1. All filters must start with `AND`. Example: `"AND resource.labels.instance_id != \"755424311712857499\""`
+1. Make sure to add `AND` between one filter and another. Example: `"AND resource.labels.instance_id != \"755424311712857499\" AND project = \"ops-leonardo-bertini\""`
+1. Use `\"` to type double quotes within the string

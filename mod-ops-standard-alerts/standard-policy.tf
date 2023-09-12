@@ -13,6 +13,7 @@ resource "google_monitoring_alert_policy" "cpu_usage" {
               metadata.user_labels.autoscaled="false" AND
               metadata.user_labels.monitored ="true" AND
               resource.type="gce_instance"
+              ${var.cpu_filters}
       EOT
       duration   = "300s"
       comparison = "COMPARISON_GT"
@@ -51,6 +52,7 @@ resource "google_monitoring_alert_policy" "memory_usage" {
               metadata.user_labels.autoscaled="false" AND
               metadata.user_labels.monitored ="true" AND
               resource.type="gce_instance"
+              ${var.mem_filters}
       EOT
       duration   = "900s"
       comparison = "COMPARISON_GT"
@@ -127,6 +129,7 @@ resource "google_monitoring_alert_policy" "disk_usage" {
               resource.type="gce_instance" AND
               metric.label.device!=monitoring.regex.full_match(".*(loop[0-9]|tmpfs|udev|sda15).*") AND
               metric.label.state="free"
+              ${var.disk_filters}
 
       EOT
       duration   = "60s"

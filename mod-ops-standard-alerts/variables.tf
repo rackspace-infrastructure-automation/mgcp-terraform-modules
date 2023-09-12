@@ -96,3 +96,21 @@ variable "sql_alert" {
   })
   default = {}
 }
+
+variable "disk_filters" {
+  description = "Additional filters for disk alert policy"
+  type        = string
+  default     = ""
+}
+
+variable "cpu_filters" {
+  description = "Additional filters for cpu alert policy"
+  type        = string
+  default     = ""
+}
+
+variable "mem_filters" {
+  description = "Additional filters for memory alert policy"
+  type        = string
+  default     = ""
+}
