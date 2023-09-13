@@ -21,7 +21,7 @@ resource "google_monitoring_alert_policy" "cpu_usage" {
         alignment_period     = "900s"
         per_series_aligner   = "ALIGN_MEAN"
         cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["project", "metadata.system_labels.name", "resource.label.zone"]
+        group_by_fields      = ["project", "metadata.system_labels.name", "resource.label.zone", "resource.label.instance_id"]
       }
       threshold_value = var.cpu_usage["cpu_threshold"]
       trigger {
@@ -138,7 +138,7 @@ resource "google_monitoring_alert_policy" "disk_usage" {
         alignment_period     = "60s"
         per_series_aligner   = "ALIGN_MEAN"
         cross_series_reducer = "REDUCE_MEAN"
-        group_by_fields      = ["project", "metadata.system_labels.name", "metric.label.device", "resource.label.zone"]
+        group_by_fields      = ["project", "metadata.system_labels.name", "metric.label.device", "resource.label.zone", "resource.labels.instance_id"]
       }
       threshold_value = var.disk_usage["disk_percentage"]
       trigger {
