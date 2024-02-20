@@ -10,6 +10,6 @@ variable "region" {
 
 variable "excluded_instances" {
   description = "Add here instances excluded from monitoring"
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
 }
