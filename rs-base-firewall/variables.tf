@@ -1,5 +1,5 @@
 variable "rax_ranges" {
-  type = list
+  type = list(any)
   default = [
 
     "134.213.179.10",  # support.lon3.gateway.rackspace.com
@@ -24,11 +24,11 @@ variable "network_name" {
 }
 
 variable "rule_prefix" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "disabled" {
-  type = bool
+  type    = bool
   default = false
 }

@@ -358,7 +358,7 @@ resource "google_monitoring_alert_policy" "ssh_rdp_open_fw" {
   depends_on            = [google_logging_metric.insecure_ssh_rdp_fw_created]
 }
 
- ### SSH RDP FW Rule Logging metric
+### SSH RDP FW Rule Logging metric
 
 resource "google_logging_metric" "insecure_ssh_rdp_fw_created" {
   count  = lookup(var.ssh_rdp_fw_alert, "enabled", false) == true ? 1 : 0

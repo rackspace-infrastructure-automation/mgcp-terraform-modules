@@ -42,7 +42,7 @@ module "ha-vpn" {
   region                    = "europe-west2"
   cloud_router_name         = "vpn-rtr"
   gateway_name              = "some-gateway"
-  resource_prefix        = "some-prefix"
+  resource_prefix           = "some-prefix"
   shared_secrets            = ["blah", "bleh"]
   peer_ips                  = ["1.1.1.1", "2.2.2.2"]
   peer_asn                  = 65002

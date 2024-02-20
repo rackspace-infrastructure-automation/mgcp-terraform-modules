@@ -12,7 +12,7 @@ resource "google_compute_firewall" "rs-bastion-direct" {
   }
 
   source_ranges = var.rax_ranges
-  disabled = var.disabled
+  disabled      = var.disabled
 }
 
 
@@ -32,7 +32,7 @@ resource "google_compute_firewall" "rs-bastion-ext" {
   source_ranges = var.rax_ranges
 
   target_tags = ["rs-bastion"]
-  disabled = var.disabled
+  disabled    = var.disabled
 }
 
 
@@ -50,7 +50,7 @@ resource "google_compute_firewall" "rs-bastion-int" {
   }
 
   source_tags = ["rs-bastion"]
-  disabled = var.disabled
+  disabled    = var.disabled
 }
 
 resource "google_compute_firewall" "rs-bastion-iap" {
@@ -63,5 +63,5 @@ resource "google_compute_firewall" "rs-bastion-iap" {
   }
 
   source_ranges = ["35.235.240.0/20"]
-  disabled = var.disabled
+  disabled      = var.disabled
 }

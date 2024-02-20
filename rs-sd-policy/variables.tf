@@ -85,13 +85,13 @@ variable "windows_disk_usage" {
 
 variable "uptime_check" {
   description = "Uptime Check Parameters"
-  type        = map
+  type        = map(any)
 }
 
 
 variable "nat_alert" {
   description = "NAT Gateway Parameters"
-  type        = map
+  type        = map(any)
   default = {
     enabled = false
   }
@@ -99,7 +99,7 @@ variable "nat_alert" {
 
 variable "ssh_rdp_fw_alert" {
   description = "Insecure Firewall Rule Parameters"
-  type        = map
+  type        = map(any)
   default = {
     enabled = false
   }
