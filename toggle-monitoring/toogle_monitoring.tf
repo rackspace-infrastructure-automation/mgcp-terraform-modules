@@ -31,7 +31,7 @@ resource "google_cloudfunctions2_function" "toggle_monitoring_off" {
   }
   service_config {
     environment_variables = {
-      "excluded_instances" = "${var.excluded_instances}"
+      "excluded_instances" = "[${join(", ", [for s in var.excluded_instances : format("%q", s)])}]"
     }
   }
 }
@@ -69,7 +69,7 @@ resource "google_cloudfunctions2_function" "toggle_monitoring_on" {
   }
   service_config {
     environment_variables = {
-      "excluded_instances" = "${var.excluded_instances}"
+      "excluded_instances" = "[${join(", ", [for s in var.excluded_instances : format("%q", s)])}]"
     }
   }
 }
