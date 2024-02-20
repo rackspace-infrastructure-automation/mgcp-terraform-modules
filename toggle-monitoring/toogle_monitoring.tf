@@ -26,6 +26,7 @@ resource "google_cloudfunctions2_function" "toggle_monitoring_off" {
   provider = google-beta
   name     = "toggle-monitoring-off"
   location = var.region
+  depends_on = [ module.projects_iam_bindings ]
 
   build_config {
     runtime     = "python39"
@@ -60,6 +61,7 @@ resource "google_cloudfunctions2_function" "toggle_monitoring_on" {
   provider = google-beta
   name     = "toggle-monitoring-on"
   location = var.region
+  depends_on = [ module.projects_iam_bindings ]
 
   build_config {
     runtime     = "python39"
