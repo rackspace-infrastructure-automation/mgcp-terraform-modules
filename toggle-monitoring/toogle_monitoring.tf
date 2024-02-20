@@ -12,8 +12,7 @@ module "projects_iam_bindings" {
 
   bindings = {
     "roles/iam.serviceAccountTokenCreator" = [
-      "serviceAccount:service-${data.google_project.project.number}@serverless-robot-prod.iam.gserviceaccount.com",
-      "serviceAccount:service-${data.google_project.project.number}@gcp-sa-pubsub.iam.gserviceaccount.com",
+    "serviceAccount:service-${data.google_project.project.number}@gcp-sa-pubsub.iam.gserviceaccount.com",
     ]
 
     "roles/run.serviceAgent" = [
