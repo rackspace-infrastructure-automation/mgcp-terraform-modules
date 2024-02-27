@@ -26,5 +26,5 @@ variable "vm_toggle_delay" {
 variable "toggle_delay" {
   description = "Toggle monitoring ON delay"
   type        = number
-  default     = []
+  default     = 0
 }
