@@ -16,8 +16,11 @@ variable "excluded_instances" {
 
 variable "vm_toggle_delay" {
   description = "List of instances to delay toggle monitoringin seconds"
-  type        = list(object)
-  default     = []
+  type        = list(object({
+    name = optional(string)
+    delay = optional(number)
+  }))
+  default     = null
 }
 
 variable "toggle_delay" {
