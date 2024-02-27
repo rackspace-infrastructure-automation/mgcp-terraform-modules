@@ -11,7 +11,7 @@ module "toggle-monitoring" {
   region             = var.region
   excluded_instances = ["instance-1", "instance-2"]
   toggle_delay = 30
-  vm_toggle_delay = "{'instance-2':60, {'instance-2':120}}"
+  vm_toggle_delay = "{'instance-1':60, 'instance-2':120}"
 }
 
 ## Inputs
