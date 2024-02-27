@@ -31,7 +31,7 @@ resource "google_cloudfunctions2_function" "toggle_monitoring_off" {
   }
   service_config {
     environment_variables = {
-      "excluded_instances" = "[${replace(join(", ", [for s in var.excluded_instances : format("%q", s)]), "\"", "'",)}]"
+      "excluded_instances" = "[${replace(join(", ", [for s in var.excluded_instances : format("%q", s)]), "\"", "'", )}]"
     }
   }
 }
@@ -68,10 +68,11 @@ resource "google_cloudfunctions2_function" "toggle_monitoring_on" {
     }
   }
   service_config {
+    timeout_seconds = 540
     environment_variables = {
-      "excluded_instances" = "[${replace(join(", ", [for s in var.excluded_instances : format("%q", s)]), "\"", "'",)}]"
-      "toggle_delay" = var.toggle_delay
-      "vm_toggle_delay" = var.vm_toggle_delay
+      "excluded_instances" = "[${replace(join(", ", [for s in var.excluded_instances : format("%q", s)]), "\"", "'", )}]"
+      "toggle_delay"       = var.toggle_delay
+      "vm_toggle_delay"    = var.vm_toggle_delay
     }
   }
 }
