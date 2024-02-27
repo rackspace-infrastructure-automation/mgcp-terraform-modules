@@ -17,7 +17,7 @@ variable "excluded_instances" {
 variable "vm_toggle_delay" {
   description = "List of instances to delay toggle monitoringin seconds"
   type        = string
-  default     = null
+  default     = "{}"
 }
 
 variable "toggle_delay" {
