@@ -1,6 +1,6 @@
 # Toggle Monitoring
 
-This module creates 2 functions to toggle monitoring on/off when a VM is started/stopped by changing the "monitored" label
+This module creates 2 functions to toggle monitoring on/off when a VM is started/stopped by changing the "monitored" label. <br />
 Function source code is located in public bucket gs://toggle-monitoring under project mgcp-infrastructure (mgcp.rackspace.com)
 
 ## Usage Example
