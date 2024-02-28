@@ -4,7 +4,7 @@ This module creates 2 functions to toggle monitoring on/off when a VM is started
 Function source code is located in public bucket gs://toggle-monitoring under project mgcp-infrastructure (mgcp.rackspace.com)
 
 ## Usage Example
-
+```
 module "toggle-monitoring" {
   source             = "github.com/rackspace-infrastructure-automation/mgcp-terraform-modules//toggle-monitoring"
   project_id         = var.project_id
@@ -13,6 +13,7 @@ module "toggle-monitoring" {
   toggle_delay = 30
   vm_toggle_delay = "{'instance-1':60, 'instance-2':120}"
 }
+```
 
 ## Inputs
 
