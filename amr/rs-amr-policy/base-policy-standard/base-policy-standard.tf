@@ -107,7 +107,7 @@ resource "google_monitoring_alert_policy" "network_usage" {
         cross_series_reducer = "REDUCE_MEAN"
         group_by_fields      = ["project", "metadata.system_labels.name", "resource.label.instance_id", "resource.label.zone"]
       }
-      threshold_value =  250000384 * reserved_cpu_cores
+      threshold_value = 250000384 * reserved_cpu_cores
       trigger {
         count = 1
       }

@@ -31,7 +31,7 @@ resource "google_monitoring_alert_policy" "uptime_check" {
 
 resource "google_monitoring_uptime_check_config" "url_monitors" {
   for_each     = toset(var.url_list)
-  display_name = "${split("/", split("//", replace(each.key,".","-"))[1])[0]}-url-monitor" #https://www.rackspace.com/index.html -> www-rackspace-com-url-monitor
+  display_name = "${split("/", split("//", replace(each.key, ".", "-"))[1])[0]}-url-monitor" #https://www.rackspace.com/index.html -> www-rackspace-com-url-monitor
   timeout      = "10s"
   period       = "60s"
 
