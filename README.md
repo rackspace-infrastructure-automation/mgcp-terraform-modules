@@ -1,1 +1,1 @@
-# mgcp-terraform-modules
+# mgcp-terraform-module
