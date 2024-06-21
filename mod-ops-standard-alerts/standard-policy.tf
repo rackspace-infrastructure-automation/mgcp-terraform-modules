@@ -85,14 +85,15 @@ resource "google_monitoring_alert_policy" "uptime_check" {
   conditions {
     display_name = "Uptime check for GCE INSTANCE - Platform"
     condition_threshold {
-      filter     = <<EOT
+      evaluation_missing_data = "EVALUATION_MISSING_DATA_ACTIVE"
+      filter                  = <<EOT
               metric.type="compute.googleapis.com/instance/uptime" AND
               metadata.user_labels.autoscaled="false" AND
               metadata.user_labels.monitored ="true" AND
               resource.type="gce_instance"
       EOT
-      duration   = "900s"
-      comparison = "COMPARISON_LT"
+      duration                = "900s"
+      comparison              = "COMPARISON_LT"
       aggregations {
         alignment_period     = "60s"
         per_series_aligner   = "ALIGN_RATE"
